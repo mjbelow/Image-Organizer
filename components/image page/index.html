@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Image Page</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../../css/style.css">
+
+<script type="application/javascript">
+
+var categories = {1: "animals", 2: "nature"}
+
+var images =
+{
+
+"animals":
+["041418_reviews_animals_main.jpg",
+"62012-istock-833768276.webp",
+"_101934336_hi001487062.jpg",
+"canwereallyk.jpg",
+"cecil-AP463227356214-1000x400.jpg",
+"Global-Tanks-What-Animals-are-Best-for-Keeping-Acreage-Tidy-FEAT.jpg",
+"IMG_0082cc.jpg",
+"lamb-iStock-665494268-16x9-e1559777676675.jpg",
+"lemuranimaheader3.jpg",
+"ms-animals-habitats-mammals.jpg",
+"sheep.jpg"],
+
+"nature":
+["02_01_slide_nature.jpg",
+"1-nature.jpg",
+"23_660x371.jpg",
+"cap-sauers-chad-reno-jun18.jpg",
+"EAF12335-B807-4021-9AC95BBA8BEE7C8D_source.webp",
+"nature-2-26-17.jpg",
+"natures-temples.jpg",
+"photo-1433086966358-54859d0ed716.jfif",
+"Shaqi_jrvej.jpg",
+"tnc_48980557.jpg",
+"turkey-3048299_1920-1366x550.jpg",
+"waterfall.jpg",
+"westboundary-photography-chris-gill-60180-unsplash_1200x734.webp"],
+
+}
+
+</script>
+</head>
+
+<body>
+
+<script type="application/javascript">
+
+
+var category = Object.keys(images);
+
+var count = category.length;
+
+var i, j;
+
+for(i = 0; i < count; i++)
+{
+
+	var group = category[i];
+	image_count = images[group].length;
+	
+	var div = document.createElement("div");
+	
+	var h3 = document.createElement("h3");
+	var title = document.createTextNode(group + " (" + image_count + ")");
+	h3.appendChild(title);
+	
+	var hr = document.createElement("hr");
+	
+	div.appendChild(h3);
+	div.appendChild(hr);
+	
+	
+	document.body.appendChild(div);
+	
+	
+	for(j = 0; j < image_count; j++)
+	{
+		var img_container = document.createElement("div");
+		img_container.className="img_container";
+		
+		var img_info = document.createElement("input");
+		img_info.type = "button";
+		img_info.value = "i";
+		img_info.className="img_info";
+		img_info.title="view / modify image data";
+		
+		var img = document.createElement("img");
+		img.src = "mjbelow/" + images[group][j];
+
+
+		img.alt = "image"+pad(j+1);
+		
+		
+		img_container.appendChild(img);
+		img_container.appendChild(img_info);
+		
+		
+		
+		
+		img_info.onclick = img_meta(img);
+		
+		
+		div.appendChild(img_container);
+	
+	}
+
+}
+
+function pad(n)
+{
+
+	if(n < 10)
+		return "00"+n;
+	else if(n < 100)
+		return "0"+n;
+	return n;
+
+}
+
+function img_meta(img)
+{
+
+	return function()
+	{
+		alert(img.alt);
+	}
+
+}
+
+</script>
+
+
+</body>
+</html>
