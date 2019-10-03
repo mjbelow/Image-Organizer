@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html>
+<style>
+@import url("style.css"); /* Using a url */
+</style>
+
+
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<!-- <link rel = "style" href="style.css"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
 <head>
 <title>Main Page</title>
 <meta charset="UTF-8">
@@ -10,8 +22,89 @@
 
 <header>
 
-<button>Upload</button>
 
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Upload</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+		
+		 <div class="sections">
+    
+    <section class="active">
+      <input type="text" placeholder="Image Title" id="title"/>
+      <select id="category">
+        <option value="Category1">Category1</option>
+        <option value="Category2">Category2</option>
+        <option value="Category3">Category3</option>
+        <option value="Category4">Category4</option>
+      </select>
+      
+      <div class="dropdown">
+        <div class="dropbtn">Categories</div>
+		<div class="dropdown-content">
+		<a href="#">Category1</a>
+		<a href="#">Category2</a>
+		<a href="#">Category3</a>
+		</div>
+		</div>
+	  
+      
+      
+		<div class="image-upload-wrap">
+		<input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+		<div class="drag-text">
+		<h3>Drag and Drop or Click to Browse</h3>
+		</div>
+		</div>
+	  
+      
+      
+    </section>
+	
+	<!-- <div class="ways">
+    <ul>
+      <li class="active">
+        submit
+      </li>
+      <li>
+        discussion
+      </li>
+    </ul>
+  </div> -->
+
+    <section>
+      <input type="text" placeholder="Topic" id="topic"/>
+      <textarea placeholder="something..." id="msg"></textarea>
+    </section>
+  
+  </div>
+  
+  <footer>
+    <ul>
+      <!-- <li><span id="reset">reset</span></li>
+      <li><span id="send">submit</span></li> -->
+	  <button class="button buttonReset" onclick="alert('Reset')">Reset</button>
+	  <button class=" button buttonSubmit" onclick="alert('Submited')">Submit</button>
+    </ul>
+  </footer> 
+  
+</div>
+		
+		
+          <div class="sections">
+		</div>
+    
+      </div>
 
 
 
