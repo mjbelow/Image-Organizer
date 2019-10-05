@@ -144,7 +144,6 @@ html,body,main {
   height: 100%;
   border: 0;
   box-sizing: border-box;
-  z-index: -1;
 }
 
 footer {
