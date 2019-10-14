@@ -4,7 +4,11 @@
 <title>Image Page</title>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="../../css/style.css">
-
+<style type="text/css">
+body {
+background: none;
+}
+</style>
 <script type="application/javascript">
 
 var categories = {1: "animals", 2: "nature"}
@@ -59,75 +63,100 @@ var i, j;
 for(i = 0; i < count; i++)
 {
 
-	var group = category[i];
-	image_count = images[group].length;
-	
-	var div = document.createElement("div");
-	
-	var h3 = document.createElement("h3");
-	var title = document.createTextNode(group + " (" + image_count + ")");
-	h3.appendChild(title);
-	
-	var hr = document.createElement("hr");
-	
-	div.appendChild(h3);
-	div.appendChild(hr);
-	
-	
-	document.body.appendChild(div);
-	
-	
-	for(j = 0; j < image_count; j++)
-	{
-		var img_container = document.createElement("div");
-		img_container.className="img_container";
-		
-		var img_info = document.createElement("input");
-		img_info.type = "button";
-		img_info.value = "i";
-		img_info.className="img_info";
-		img_info.title="view / modify image data";
-		
-		var img = document.createElement("img");
-		img.src = "mjbelow/" + images[group][j];
+  var group = category[i];
+  image_count = images[group].length;
+
+  var div = document.createElement("div");
+
+  var h3 = document.createElement("h3");
+  var title = document.createTextNode(group + " (" + image_count + ")");
+  h3.appendChild(title);
+
+  var hr = document.createElement("hr");
+
+  div.appendChild(h3);
+  div.appendChild(hr);
 
 
-		img.alt = "image"+pad(j+1);
-		
-		
-		img_container.appendChild(img);
-		img_container.appendChild(img_info);
-		
-		
-		
-		
-		img_info.onclick = img_meta(img);
-		
-		
-		div.appendChild(img_container);
-	
-	}
+  document.body.appendChild(div);
+
+
+  for(j = 0; j < image_count; j++)
+  {
+    var img_container = document.createElement("div");
+    img_container.className="img_container";
+
+    var img_info = document.createElement("input");
+    img_info.type = "button";
+    img_info.value = "i";
+    img_info.className="img_info";
+    img_info.title="view / modify image data";
+
+    var img = document.createElement("img");
+    img.src = "mjbelow/" + images[group][j];
+    img.onclick=enlarge(img.src);
+
+    img.alt = "image"+pad(j+1);
+
+
+    img_container.appendChild(img);
+    img_container.appendChild(img_info);
+
+
+
+
+    img_info.onclick = img_meta(img);
+
+
+    div.appendChild(img_container);
+
+  }
 
 }
 
 function pad(n)
 {
 
-	if(n < 10)
-		return "00"+n;
-	else if(n < 100)
-		return "0"+n;
-	return n;
+  if(n < 10)
+    return "00"+n;
+  else if(n < 100)
+    return "0"+n;
+  return n;
+
+}
+
+function enlarge(src)
+{
+
+  return function()
+  {
+    var cover = document.createElement("div");
+    cover.id = "cover";
+    var img = document.createElement("img");
+    img.src = src;
+
+    cover.appendChild(img);
+    document.body.style.overflow="hidden";
+
+    cover.onclick=function() {
+      this.remove();
+      document.body.style.overflow="visible";
+    }
+
+    document.body.appendChild(cover);
+
+
+  }
 
 }
 
 function img_meta(img)
 {
 
-	return function()
-	{
-		alert(img.alt);
-	}
+  return function()
+  {
+    alert(img.alt);
+  }
 
 }
 
