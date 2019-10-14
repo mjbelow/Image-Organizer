@@ -5,28 +5,26 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
-<body>
 
+<body>
 
 <header>
 
-<button>Upload</button>
+  <button id="upload" onclick="document.getElementById('frame').src='components/upload page/image.html'">Upload</button>
+  username
+  <a href="#">Log out</a>
 
-
-
-
-username
-<a href="#">Log out</a>
 </header>
 
-<main id="main">
 
-<section id="menu"></section>
-
+<main>
+  <section id="menu"></section>
+  <iframe id="frame"></iframe>
 </main>
 
-<footer></footer>
+<script type="application/javascript">
+document.getElementById("frame").src="";
+</script>
 
 </body>
-
 </html>
