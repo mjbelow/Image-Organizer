@@ -81,7 +81,7 @@ section {
 section.active {
   display: block;
 }
-section input,
+section input:not([type="checkbox"]),
 section textarea {
   display: block;
   width: 100%;
@@ -95,9 +95,6 @@ section textarea {
 }
 section textarea {
   min-height: 200px;
-}
-section select {
-  display: none;
 }
 .select-option {
   background-color: #F5F7FA;
@@ -364,10 +361,14 @@ section select {
   color: white;
   border: 2px solid #555555;
 }
-.dropbtn {
-  background-color: #white;
+#category, #choice {
+  width: 100%;
+  margin-bottom: 4px;
+}
+#category, .dropbtn {
+  background-color: white;
   color: #555555;
-  padding: 9px 119px;
+  padding: 9px;
   font-size: 16px;
   border: 2px solid #555555;
   cursor: pointer;
@@ -392,6 +393,7 @@ section select {
 }
 .dropdown-content a:hover {
   background-color: #555555;
+  color: #eee;
 }
 .dropdown:hover .dropdown-content {
   display: block;
