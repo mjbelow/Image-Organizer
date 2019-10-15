@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+ul {
+list-style:none;
+}
+</style>
+
+<script type="application/javascript">
+var index = {};
+index[1] = {};
+index[1][1]=4;
+index[1][2]=8;
+index[1][4]=12;
+index[1][8]=54;
+index[2] = {};
+index[2][1]=1;
+index[2][2]=2;
+index[2][3]=2;
+index[2][4]=2;
+index[2][5]=1;
+index[2][6]=1;
+index[2][7]=1;
+index[3] = {};
+index[3][2]=1
+index[3][5]=1
+index[3][6]=1
+index[3][7]=1
+index[3][9]=1
+index[3][13]=1
+index[3][14]=1
+index[3][17]=1
+index[3][19]=1
+index[3][19]=2
+index[3][21]=1
+index[3][25]=1
+index[3][25]=2
+index[3][26]=1
+index[3][30]=1
+index[3][30]=2
+index[4] = {};
+index[4][1]=1
+index[4][2]=1
+index[4][3]=1
+index[4][4]=1
+index[4][5]=1
+index[4][6]=1
+index[4][7]=2
+</script>
+
+</head>
+
+<body>
+
+<ul>
+<li>
+	<input type="checkbox" class="category">Seasons (<span>78</span>)
+	<ul>
+	<li><input type="checkbox" class="choice" data-group=1 data-bin=1>Spring (<span>4</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=1 data-bin=2>Summer (<span>8</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=1 data-bin=4>Fall (<span>12</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=1 data-bin=8>Winter (<span>54</span>)</li>
+	</ul>
+</li>
+<li>
+	<input type="checkbox" class="category">Animals (<span>11</span>)
+	<ul>
+	<li><input type="checkbox" class="choice" data-group=2 data-bin=1>Cat (<span>5</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=2 data-bin=2>Dog (<span>6</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=2 data-bin=4>Penguin (<span>5</span>)</li>
+	</ul>
+</li>
+<li>
+	<input type="checkbox" class="category">Category (<span>16</span>)
+	<ul>
+	<li><input type="checkbox" class="choice" data-group=3 data-bin=1>A (<span>10</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=3 data-bin=2>B (<span>9</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=3 data-bin=4>C (<span>8</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=3 data-bin=8>D (<span>8</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=3 data-bin=16>E (<span>9</span>)</li>
+	</ul>
+</li>
+<li>
+	<input type="checkbox" class="category">Category (<span>8</span>)
+	<ul>
+	<li><input type="checkbox" class="choice" data-group=4 data-bin=1>A (<span>5</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=4 data-bin=2>B (<span>5</span>)</li>
+	<li><input type="checkbox" class="choice" data-group=4 data-bin=4>C (<span>5</span>)</li>
+	</ul>
+</li>
+
+</ul>
+
+<script type="application/javascript">
+
+var choice = document.getElementsByClassName("choice");
+var count = choice.length;
+var i;
+
+for(i = 0; i < count; i++)
+{
+
+	choice[i].onchange=function()
+	{
+	
+		var group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[0];
+		var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice");		
+		var group_count = group_choice.length;
+		var group = this.dataset.group;
+		
+		var image_keys = new Set();
+
+		
+		var active = 0;
+		var max = 0;
+	
+		for(var j = 0; j < group_count; j++)
+		{
+		
+			if(group_choice[j].checked)
+			{
+				//active |= Math.pow(2, j);
+				active |= group_choice[j].dataset.bin;
+			}
+
+			max |= group_choice[j].dataset.bin;
+		}
+		
+		if(active == max)
+			group_category.checked=true;
+		else
+			group_category.checked=false;
+
+		if(active != max && active != 0)
+			group_category.indeterminate=true;
+		else
+			group_category.indeterminate=false;
+		
+		var group_keys = Object.keys(index[group]);
+		var group_keys_count = group_keys.length;
+
+		var group_total = 0;
+
+		for(var j = 0; j < group_keys_count; j++)
+		{
+			
+			group_total += index[group][group_keys[j]];
+		
+		}
+		
+		// update value for all choices
+		for(var j = 0; j < group_count; j++)
+		{
+			
+			var selected = 0;
+			var total = 0;
+			var n = active & ~group_choice[j].dataset.bin;
+			var bin = group_choice[j].dataset.bin;
+			//var n = active | Math.pow(2, j);
+			
+			var choice_checked = group_choice[j].checked;
+			
+			for(var k = 0; k < group_keys_count; k++)
+			{
+				
+				if((bin & group_keys[k]) == bin)
+					total += index[group][group_keys[k]];
+				
+			//	console.log("n: " + n +"\t\t group_keys["+k+"]: " + group_keys[k] + "\t\t n & group_keys["+k+"]: " + v)
+				
+				if(      !  (   ( ((n & group_keys[k]) == 0)  ) &&   (bin & group_keys[k]) == bin    )      )
+				{
+					console.log("item " + j + ":\t" + group_keys[k])
+					if(choice_checked)
+						image_keys.add(k);
+					selected += index[group][group_keys[k]];
+				}
+			
+			}
+			
+			var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
+			info.innerHTML = selected + " / " + total;
+
+		}
+		
+		var image_keys_values = image_keys.values();
+		var image_keys_count = image_keys.size;
+
+		var group_info = group_category.parentElement.getElementsByTagName("span")[0];
+		var group_selected = 0;
+		
+		for(j = 0; j < image_keys_count; j++)
+		{
+			var key = image_keys_values.next().value;
+			
+			
+			group_selected += index[group][group_keys[key]];
+		
+		}
+
+		group_info.innerHTML = group_selected + " / " + group_total;
+	
+	}
+
+}
+
+
+var category = document.getElementsByClassName("category");
+count = category.length;
+
+for(i = 0; i < count; i++)
+{
+
+	category[i].onchange=function()
+	{
+		toggle_all(this.checked, this.parentElement.getElementsByClassName("choice"));
+		this.parentElement.getElementsByClassName("choice")[0].onchange();
+	}
+
+	category[i].onchange();
+
+}
+
+function toggle_all(checked, choice)
+{
+
+	var count = choice.length;
+
+	for(var i = 0; i < count; i++)
+	{
+		choice[i].checked = checked;
+	}
+
+}
+
+</script>
+
+</body>
+
+</html>
