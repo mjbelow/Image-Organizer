@@ -1,0 +1,83 @@
+<head>
+    <!-- <link rel="stylesheet/less" href="style.less"> -->
+     <!--  <script src="less.js" type="text/javascript"></script> -->
+	  
+	  <!-- <link rel="stylesheet" type="text/css" href="CSS.css"> -->
+</head>
+
+<style>
+@import url("style.css"); /* Using a url */
+</style>
+
+<div class="wrapper">
+  <header>
+    <h1>Upload Images</h1>
+    <span></span>
+  </header>
+  
+  
+  
+  <div class="sections">
+    
+    <section class="active">
+      <input type="text" placeholder="Image Title" id="title"/>
+      <select id="category">
+        <option value="Category1">Category1</option>
+        <option value="Category2">Category2</option>
+        <option value="Category3">Category3</option>
+        <option value="Category4">Category4</option>
+      </select>
+      
+      <div id="choice" class="dropdown">
+        <div class="dropbtn">Choices</div>
+		<div class="dropdown-content">
+		<a><input type="checkbox"> Choice 1</a>
+		<a><input type="checkbox"> Choice 2</a>
+		<a><input type="checkbox"> Choice 3</a>
+		</div>
+		</div>
+	  
+      
+      
+		<div class="image-upload-wrap">
+		<input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+		<div class="drag-text">
+		<h3>Drag and Drop or Click to Browse</h3>
+		</div>
+		</div>
+	  
+      
+      
+    </section>
+	
+	<!-- <div class="ways">
+    <ul>
+      <li class="active">
+        submit
+      </li>
+      <li>
+        discussion
+      </li>
+    </ul>
+  </div> -->
+
+    <section>
+      <input type="text" placeholder="Topic" id="topic"/>
+      <textarea placeholder="something..." id="msg"></textarea>
+    </section>
+  
+  </div>
+  
+  <footer>
+    <ul>
+      <!-- <li><span id="reset">reset</span></li>
+      <li><span id="send">submit</span></li> -->
+	  <button class="button buttonReset" onclick="alert('Reset')">Reset</button>
+	  <button class=" button buttonSubmit" onclick="alert('Submited')">Submit</button>
+    </ul>
+  </footer> 
+  
+</div>
+<div class="notification"></div>
+<footer>
+</footer>
