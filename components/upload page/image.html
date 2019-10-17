@@ -29,7 +29,7 @@ options["seasons"] = ["summer","fall","winter","spring"];
     
     <section class="active">
       <input type="text" placeholder="Image Title" id="title"/>
-      <select id="category">
+      <select id="category" onchange="change_choices(this.value)">
         <option value="Category1">Category1</option>
         <option value="Category2">Category2</option>
         <option value="Category3">Category3</option>
@@ -38,7 +38,7 @@ options["seasons"] = ["summer","fall","winter","spring"];
       
       <div id="choice" class="dropdown">
         <div class="dropbtn">Choices</div>
-		<div class="dropdown-content">
+		<div class="dropdown-content" id="choices">
 		<a><input type="checkbox"> Choice 1</a>
 		<a><input type="checkbox"> Choice 2</a>
 		<a><input type="checkbox"> Choice 3</a>
@@ -89,6 +89,24 @@ options["seasons"] = ["summer","fall","winter","spring"];
 <div class="notification"></div>
 <footer>
 </footer>
+
+<script>
+
+var category = document.getElementById("category");
+
+var choices = document.getElementById("choices");
+
+
+category.innerHTML="<option>" + Object.keys(options)[0] + "</option>";
+category.innerHTML+="<option>" + Object.keys(options)[1] + "</option>";
+
+//choices.innerHTML="<a><input type='checkbox'>" + options[  Object.keys(options)[0]   ]  [0] + "</a>"
+
+function change_choices(value)
+{
+choices.innerHTML="<a><input type='checkbox'>" + options[value]  [0] + "</a>"
+}
+</script>
 
 </body>
 </html>
