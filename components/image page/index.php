@@ -35,8 +35,45 @@ $images = array();
 
 // sql query
 //$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3)) order by image.category_id, image.choices";
-$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)) order by image.category_id, image.choices";
+//$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)) order by image.category_id, image.choices";
+$query = 
+"select category.name category, image.name image " .
+"from c2375a05proj.image " .
+  "inner join c2375a05proj.category on image.category_id = category.id " .
+"where ";
 
+
+$output = $_GET['output'];
+$category_count = count($output);
+for($i = 0; $i < $category_count; $i++)
+{
+  
+  $category_item = (explode(",", $output[$i]));
+  $item_count = count($category_item);
+
+  for($j = 0; $j < $item_count; $j++)
+  {
+
+    if($j == 0)
+      $query .= "(category_id = " . $category_item[0] . " and choices in (";
+    elseif($j == ($item_count - 1))
+      $query .= $category_item[$j];
+    else
+      $query .= $category_item[$j] . ",";
+
+  }
+
+  if($i == ($category_count - 1))
+    $query .= ")) " .
+    "order by image.category_id, image.choices";
+  else
+    $query .= ")) or ";
+  
+}
+echo "//" . $query . "\n";
+
+
+//$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)) order by image.category_id, image.choices";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
