@@ -84,7 +84,7 @@ $con->close();
 
 <main>
   <section id="menu">
-    <form id="options" action="components/image page/index.php" target="_blank" method="get">
+    <form id="options" action="components/image page/index.php" target="content" method="get">
 
       <input type="submit" value="Show Images">
       <!-- <input type="reset" value="Reset"> -->
@@ -275,7 +275,7 @@ $con->close();
                 if(choice_checked)
                 {
                   image_keys.add(k);
-                  selection.add(Math.pow(2,k))
+                  selection.add(k+1);
                 }
                 selected += index[group][group_keys[k]];
               }
