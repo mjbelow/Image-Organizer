@@ -37,8 +37,8 @@ $images = array();
 //$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3)) order by image.category_id, image.choices";
 //$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)) order by image.category_id, image.choices";
 $query = 
-"select distinct * from " .
-"(select category.name category, image_meta.name image " .
+"select category, image from " .
+"(select category.name category, image_meta.name image, category_id, choice_id " .
 "from c2375a05proj.image_meta " .
   "inner join c2375a05proj.category on image_meta.category_id = category.id " .
 "where ";
@@ -66,7 +66,7 @@ for($i = 0; $i < $category_count; $i++)
 
   if($i == ($category_count - 1))
     $query .= ")) " .
-    "order by image_meta.category_id, image_meta.choice_id) results";
+    "order by image_meta.category_id, image_meta.choice_id) results order by category_id, choice_id";
   else
     $query .= ")) or ";
   
