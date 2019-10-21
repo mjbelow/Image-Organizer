@@ -146,6 +146,8 @@ header {
   padding: 0 20px;
   position: relative;
   z-index: 1;
+  white-space: nowrap;
+  min-width: 576px;
 }
 
 header a {
@@ -165,6 +167,7 @@ html,body {
 main {
   position: relative;
   height: calc(100% - 60px);
+  min-width: 576px;
 }
 
 #menu {
