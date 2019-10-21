@@ -3,8 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <style type="text/css">
+html,body {
+  height: 100%;
+}
 ul {
-list-style:none;
+  list-style:none;
+}
+.output {
+  display: block;
+  width: 100%;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
 }
 </style>
 
@@ -107,7 +119,7 @@ $con->close();
 
 <body>
 
-<form id="options">
+<form id="options" target="output" method="get" action="generate_query.php">
 
 <input type="radio" name="operator" class="operator" checked>
 OR
@@ -132,6 +144,11 @@ for(var i = 0; i < category_count; i++)
   var category_checkbox = document.createElement("input");
   category_checkbox.type="checkbox";
   category_checkbox.className="category";
+  
+  // category output (used to handle form data)
+  var category_output = document.createElement("input");
+  category_output.className="output";
+  category_output.name="output[]";
   
   // category choice list
   var choice_list = document.createElement("ul");
@@ -161,6 +178,7 @@ for(var i = 0; i < category_count; i++)
   }
   
   // append to category item
+  category_item.appendChild(category_output);
   category_item.appendChild(category_checkbox);
   category_item.innerHTML += category[i] + " (<span></span>)";
   category_item.appendChild(choice_list);
@@ -205,7 +223,7 @@ for(var i = 0; i < category_count; i++)
 
 </ul>
 -->
-<button>est</button>
+<button>Submit</button>
 
 </form>
 
@@ -229,13 +247,16 @@ for(var i = 0; i < count; i++)
   choice[i].onchange=function()
   {
   
+    var group_output = this.parentElement.parentElement.parentElement.getElementsByClassName("output")[0];
     var group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[0];
     var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice");    
     var group_count = group_choice.length;
     var group = this.dataset.group;
     
     var image_keys = new Set();
+    var selection = new Set();
     
+    group_output.value = group + ":";
 
     
     var active = 0;
@@ -258,10 +279,15 @@ for(var i = 0; i < count; i++)
     else
       group_category.checked=false;
     if(active != max && active != 0)
+    {
       group_category.indeterminate=true;
+      group_output.disabled=false;
+    }
     else
+    {
       group_category.indeterminate=false;
-
+      group_output.disabled=true;
+    }
 
     var group_keys = Object.keys(index[group]);
     var group_keys_count = group_keys.length;
@@ -311,7 +337,10 @@ for(var i = 0; i < count; i++)
         {
           //console.log("item " + j + ":\t" + group_keys[k])
           if(choice_checked)
+          {
             image_keys.add(k);
+            selection.add(Math.pow(2,k))
+          }
           selected += index[group][group_keys[k]];
         }
       
@@ -338,7 +367,9 @@ for(var i = 0; i < count; i++)
     }
 
     group_info.innerHTML = group_selected + " / " + group_total;
-  
+    
+    //(category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)
+    group_output.value += Array.from(selection);
   }
 
 }
@@ -400,6 +431,8 @@ for(var i = 0; i < count; i++)
 
 
 </script>
+
+<iframe name="output"></iframe>
 
 </body>
 
