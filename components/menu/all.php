@@ -279,15 +279,15 @@ for(var i = 0; i < count; i++)
     else
       group_category.checked=false;
     if(active != max && active != 0)
-    {
       group_category.indeterminate=true;
-      group_output.disabled=false;
-    }
     else
-    {
       group_category.indeterminate=false;
+    
+    // disable output for a category if no choices are selected
+    if(active != 0)
+      group_output.disabled=false;
+    else
       group_output.disabled=true;
-    }
 
     var group_keys = Object.keys(index[group]);
     var group_keys_count = group_keys.length;
