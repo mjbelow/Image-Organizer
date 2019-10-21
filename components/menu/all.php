@@ -256,7 +256,7 @@ for(var i = 0; i < count; i++)
     var image_keys = new Set();
     var selection = new Set();
     
-    group_output.value = group + ":";
+    group_output.value = group + ",";
 
     
     var active = 0;

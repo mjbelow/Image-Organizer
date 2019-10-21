@@ -4,20 +4,21 @@ $output = $_GET['output'];
 $category_count = count($output);
 for($i = 0; $i < $category_count; $i++)
 {
-  $get_category = (explode(":", $output[$i]));
-  $get_choices = (explode(",", $get_category[1]));
+  $category_item = (explode(",", $output[$i]));
   
-  $choice_count = count($get_choices);
+  $item_count = count($category_item);
   
-  echo "(category_id = " . $get_category[0] . " and choices in (";
 
-  for($j = 0; $j < $choice_count; $j++)
+  for($j = 0; $j < $item_count; $j++)
   {
     
-    if($j == ($choice_count - 1))
-      echo $get_choices[$j];
+   
+    if($j == 0)
+      echo "(category_id = " . $category_item[0] . " and choices in (";
+    elseif($j == ($item_count - 1))
+      echo $category_item[$j];
     else
-      echo $get_choices[$j] . ",";
+      echo $category_item[$j] . ",";
     
   }
   
