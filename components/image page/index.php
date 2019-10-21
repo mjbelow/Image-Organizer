@@ -11,7 +11,6 @@ background: none;
 }
 </style>
 <script type="application/javascript">
-
 <?php
 $host="127.0.0.1";
 $port=3306;
@@ -26,7 +25,7 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 
 
 
-// array to maintain order of categories
+// array to maintain order of categories (not necessary)
 $categories = array();
 
 // array used to create a JSON string
@@ -77,8 +76,6 @@ echo "var categories = " . json_encode($categories) . ";";
 <body>
 
 <script type="application/javascript">
-
-
 var category = Object.keys(images);
 
 var count = category.length;
@@ -184,84 +181,7 @@ function img_meta(img)
   }
 
 }
-
 </script>
 
-<script type="application/javascript">
-
-<?php
-
-// array to maintain order of categories
-$categories = array();
-
-// array used to create a JSON string
-// keys: category
-// values: array of image names belonging to category
-$images = array();
-
-$images["Tennis"] = [14,2,3,4];
-$images["Animals"] = [5,6,7,8];
-array_push($images["Tennis"],"plaese");
-echo "var mine = JSON.parse('";
-echo json_encode($images);
-echo "');";
-
-?>
-
-</script>
-<!--
-<?php
-$host="127.0.0.1";
-$port=3306;
-$socket="";
-$user="c2375a05";
-$password="148kpQ98*";
-$dbname="c2375a05proj";
-
-$con = new mysqli($host, $user, $password, $dbname, $port, $socket)
-	or die ('Could not connect to the database server' . mysqli_connect_error());
-
-
-
-$images = array();
-
-$categories = array();
-
-$images["Tennis"] = array();
-
-array_push($images["Tennis"], 1, "test");
-
-$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3)) order by image.category_id, image.choices";
-
-
-if ($stmt = $con->prepare($query)) {
-    $stmt->execute();
-    $stmt->bind_result($category, $image);
-    while ($stmt->fetch()) {
-      // if key doesn't exist for a category, assign one a new array and add to categories array
-      /*
-      if(!isset($images[$category])) {
-        
-        $images[$category] = array();
-        $categories.push($category);
-        array_push();
-      }
-      */
-        //printf("%s, %s\n", $category, $images);
-        
-      //echo "$category";
-        //printf("%s, %s\n", $category, $image);
-      array_push($images[$category], 1, "test");
-    }
-    $stmt->close();
-}
-
-$con->close();
-
-echo json_encode($images);
-
-echo "yesy";
-?>
--->
 </body>
 </html>
