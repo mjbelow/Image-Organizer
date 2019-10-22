@@ -3,6 +3,11 @@
 <head>
 <title>Main Page</title>
 <meta charset="UTF-8">
+<style type="text/css">
+.output {
+  width: 100%;
+}
+</style>
 <script type="application/javascript">
 <?php
 $host="127.0.0.1";
@@ -275,7 +280,7 @@ $con->close();
                 if(choice_checked)
                 {
                   image_keys.add(k);
-                  selection.add(k+1);
+                  selection.add(group_keys[k]);
                 }
                 selected += index[group][group_keys[k]];
               }

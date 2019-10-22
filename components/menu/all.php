@@ -21,37 +21,6 @@ iframe {
 </style>
 
 <script type="application/javascript">
-var index = {};
-index[1] = {};
-index[1][1]=4;
-index[1][2]=8;
-index[1][4]=12;
-index[1][8]=54;
-index[2] = {};
-index[2][1]=1;
-index[2][2]=2;
-index[2][3]=2;
-index[2][4]=2;
-index[2][5]=1;
-index[2][6]=1;
-index[2][7]=1;
-index[3] = {};
-index[3][2]=1
-index[3][5]=1
-index[3][6]=1
-index[3][7]=1
-index[3][9]=1
-index[3][13]=1
-index[3][14]=1
-index[3][17]=1
-index[3][19]=1
-index[3][19]=2
-index[3][21]=1
-index[3][25]=1
-index[3][25]=2
-index[3][26]=1
-index[3][30]=1
-index[3][30]=2
 <?php
 $host="127.0.0.1";
 $port=3306;
@@ -104,7 +73,7 @@ if ($stmt = $con->prepare($query)) {
 
 
 
-echo "index = JSON.parse('" . json_encode($index) . "');";
+echo "var index = JSON.parse('" . json_encode($index) . "');";
 echo "var my_options = JSON.parse('" . json_encode($options) . "');";
 
 
@@ -339,7 +308,8 @@ for(var i = 0; i < count; i++)
           if(choice_checked)
           {
             image_keys.add(k);
-            selection.add(Math.pow(2,k))
+            //selection.add(Math.pow(2,k));
+            selection.add(group_keys[k]);
           }
           selected += index[group][group_keys[k]];
         }
