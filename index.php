@@ -196,13 +196,11 @@ $con->close();
           
           var image_keys = new Set();
           var selection = new Set();
-          
-          group_output.value = group + ",";
 
-          
+
           var active = 0;
           var max = 0;
-        
+
           for(var j = 0; j < group_count; j++)
           {
           
@@ -223,12 +221,7 @@ $con->close();
             group_category.indeterminate=true;
           else
             group_category.indeterminate=false;
-          
-          // disable output for a category if no choices are selected
-          if(active != 0)
-            group_output.disabled=false;
-          else
-            group_output.disabled=true;
+
 
           var group_keys = Object.keys(index[group]);
           var group_keys_count = group_keys.length;
@@ -308,9 +301,21 @@ $con->close();
           }
 
           group_info.innerHTML = group_selected + " / " + group_total;
+
+          // disable output for a category if no choices are selected
+          var output = Array.from(selection);
           
-          //(category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)
-          group_output.value += Array.from(selection);
+          if(output.length == 0)
+          {
+            group_output.disabled=true;
+            group_output.value = group;
+          }
+          else
+          {
+            group_output.disabled=false;
+            group_output.value = group + "," + output;
+          }
+
         }
 
       }
