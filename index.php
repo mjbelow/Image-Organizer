@@ -177,7 +177,6 @@ $con->close();
           var choice_checkbox = document.createElement("input");
           choice_checkbox.type="checkbox";
           choice_checkbox.className="choice in";
-          choice_checkbox.dataset.type="in";
           choice_checkbox.dataset.group=(i+1);
           choice_checkbox.dataset.bin=Math.pow(2, j);
 
@@ -187,7 +186,6 @@ $con->close();
           // choice checkbox option (exclude);
           choice_checkbox = choice_checkbox.cloneNode(false);
           choice_checkbox.className="choice ex";
-          choice_checkbox.dataset.type="ex";
           
           // append (exclude) to choice item
           choice_item.appendChild(choice_checkbox);
@@ -229,8 +227,6 @@ $con->close();
       var ex_or_op = true;
       var ex_and_op = false;
 
-      var howmany = 0;
-
       var choice = document.getElementsByClassName("choice");
       var count = choice.length;
 
@@ -239,9 +235,6 @@ $con->close();
 
         choice[i].onchange=function()
         {
-          //alert(++howmany);
-          // is checkbox being changed used for include or exclude
-          //var include = this.dataset.type == "in";
 
           // include logic
           var group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[0];
@@ -468,6 +461,9 @@ $con->close();
             toggle_all(this.checked, this.parentElement.getElementsByClassName("choice in"));
             this.parentElement.getElementsByClassName("choice")[0].onchange();
           }
+          
+          // initiate menu
+           category[i].onchange();
         }
         // exclude category checkbox
         else
@@ -512,8 +508,11 @@ $con->close();
           }
           
         }
+        
+        // initialize operator values
+        or_op = operator[0].checked;
+        and_op = operator[1].checked;
 
-        operator[i].onchange();
       }
 
       // exclude logic
@@ -535,8 +534,11 @@ $con->close();
           }
           
         }
+        
+        // initialize operator values
+        ex_or_op = ex_operator[0].checked;
+        ex_and_op = ex_operator[1].checked;
 
-        ex_operator[i].onchange();
       }
 
 
