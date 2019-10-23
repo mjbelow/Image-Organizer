@@ -9,6 +9,26 @@
 }
 </style>
 <script type="application/javascript">
+// Performs difference operation between 
+// called set and otherSet 
+Set.prototype.difference = function(otherSet) 
+{ 
+    // creating new set to store difference 
+     var differenceSet = new Set(); 
+  
+    // iterate over the values 
+    for(var elem of this) 
+    { 
+        // if the value[i] is not present  
+        // in otherSet add to the differenceSet 
+        if(!otherSet.has(elem)) 
+            differenceSet.add(elem); 
+    } 
+  
+    // returns values of differenceSet 
+    return differenceSet; 
+}
+
 <?php
 $host="127.0.0.1";
 $port=3306;
@@ -70,6 +90,7 @@ $con->close();
 
 
 ?>
+
 </script>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
@@ -96,13 +117,27 @@ $con->close();
 
       <br>
       <br>
-
-      <input type="radio" name="operator" class="operator" checked>
-      OR
-      <input type="radio" name="operator" class="operator">
-      AND
-      <input type="radio" name="operator" class="operator">
-      XOR
+      <fieldset>
+        <legend>Include</legend>
+        <input type="radio" name="in_operator" class="operator in" checked>
+        OR
+        <input type="radio" name="in_operator" class="operator in">
+        AND
+        <input type="radio" name="in_operator" class="operator in">
+        XOR
+      </fieldset>
+      
+      <br>
+      
+      <fieldset>
+        <legend>Exclude</legend>
+        <input type="radio" name="ex_operator" class="operator ex" checked>
+        OR
+        <input type="radio" name="ex_operator" class="operator ex">
+        AND
+        <input type="radio" name="ex_operator" class="operator ex">
+        XOR
+      </fieldset>
     
       <script type="application/javascript">
       // category list
@@ -125,7 +160,7 @@ $con->close();
         var category_output = document.createElement("input");
         category_output.className="output";
         category_output.name="output[]";
-        
+
         // category choice list
         var choice_list = document.createElement("ul");
         
@@ -138,15 +173,26 @@ $con->close();
           // choice item
           var choice_item = document.createElement("li");
           
-          // choice checkbox option
+          // choice checkbox option (include)
           var choice_checkbox = document.createElement("input");
           choice_checkbox.type="checkbox";
-          choice_checkbox.className="choice";
+          choice_checkbox.className="choice in";
+          choice_checkbox.dataset.type="in";
           choice_checkbox.dataset.group=(i+1);
           choice_checkbox.dataset.bin=Math.pow(2, j);
-          
-          // append to choice item
+
+          // append (include) to choice item
           choice_item.appendChild(choice_checkbox);
+          
+          // choice checkbox option (exclude);
+          choice_checkbox = choice_checkbox.cloneNode(false);
+          choice_checkbox.className="choice ex";
+          choice_checkbox.dataset.type="ex";
+          
+          // append (exclude) to choice item
+          choice_item.appendChild(choice_checkbox);
+          
+          // add choice name
           choice_item.innerHTML += choice[j] + " (<span></span>)";
           
           // append to choice list
@@ -155,7 +201,12 @@ $con->close();
         
         // append to category item
         category_item.appendChild(category_output);
+        
+        
         category_item.appendChild(category_checkbox);
+        category_checkbox = category_checkbox.cloneNode(false);
+        category_item.appendChild(category_checkbox);
+        
         category_item.innerHTML += category[i] + " (<span></span>)";
         category_item.appendChild(choice_list);
         
@@ -174,10 +225,11 @@ $con->close();
       
       var or_op = true;
       var and_op = false;
-      var xor_op = false;
 
+      var ex_or_op = true;
+      var ex_and_op = false;
 
-
+      var howmany = 0;
 
       var choice = document.getElementsByClassName("choice");
       var count = choice.length;
@@ -187,32 +239,56 @@ $con->close();
 
         choice[i].onchange=function()
         {
-        
-          var group_output = this.parentElement.parentElement.parentElement.getElementsByClassName("output")[0];
+          //alert(++howmany);
+          // is checkbox being changed used for include or exclude
+          //var include = this.dataset.type == "in";
+
+          // include logic
           var group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[0];
-          var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice");    
+          var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice in");    
+          
+          // exclude logic
+          var ex_group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[1];
+          var ex_group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice ex");
+          
+          var group_output = this.parentElement.parentElement.parentElement.getElementsByClassName("output")[0];
           var group_count = group_choice.length;
           var group = this.dataset.group;
           
+          // include logic
           var image_keys = new Set();
           var selection = new Set();
+          
+          // exclude logic
+          var ex_image_keys = new Set();
+          var ex_selection = new Set();
+          
+          var group_selected = 0;
 
-
+          // include logic
           var active = 0;
-          var max = 0;
+          
+          // exclude logic
+          var ex_active = 0;
 
+          var max = 0;
+          
           for(var j = 0; j < group_count; j++)
           {
           
+            // include logic
             if(group_choice[j].checked)
-            {
               active |= group_choice[j].dataset.bin;
-            }
+            
+            //exclude logic
+            if(ex_group_choice[j].checked)
+              ex_active |= ex_group_choice[j].dataset.bin;
             
             max |= group_choice[j].dataset.bin;
           }
 
           // change state of category checkbox
+          // include logic
           if(active == max)
             group_category.checked=true;
           else
@@ -221,6 +297,16 @@ $con->close();
             group_category.indeterminate=true;
           else
             group_category.indeterminate=false;
+          
+          // exclude logic
+          if(ex_active == max)
+            ex_group_category.checked=true;
+          else
+            ex_group_category.checked=false;
+          if(ex_active != max && ex_active != 0)
+            ex_group_category.indeterminate=true;
+          else
+            ex_group_category.indeterminate=false;
 
 
           var group_keys = Object.keys(index[group]);
@@ -230,31 +316,46 @@ $con->close();
 
           for(var j = 0; j < group_keys_count; j++)
           {
-            
+
             group_total += index[group][group_keys[j]];
-          
+
           }
           
           // update value for all choices
           for(var j = 0; j < group_count; j++)
           {
-            
+            // include logic
             var selected = 0;
+            
+            // exclude logic
+            var ex_selected = 0;
+            
             var total = 0;
-            var n;
             var bin = group_choice[j].dataset.bin;
             
+            // include logic
+            var n;
             if(or_op | and_op)
               n = active | bin;
             else
               n = active & ~bin;
             
+            // exclude logic
+            var ex_n;
+            if(ex_or_op | ex_and_op)
+              ex_n = ex_active | bin;
+            else
+              ex_n = ex_active & ~bin;
             
+            // include logic
             var choice_checked = group_choice[j].checked;
+            
+            // exclude logic
+            var ex_choice_checked = ex_group_choice[j].checked;
             
             for(var k = 0; k < group_keys_count; k++)
             {
-              
+              // include logic
               var bool;
               if(and_op)
                 bool = ((n & group_keys[k]) == n);
@@ -263,10 +364,19 @@ $con->close();
               else
                 bool = (((n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
               
+              // exclude logic
+              var ex_bool;
+              if(ex_and_op)
+                ex_bool = ((ex_n & group_keys[k]) == ex_n);
+              else if(ex_or_op)
+                ex_bool = ((bin & group_keys[k]) == bin);
+              else
+                ex_bool = (((ex_n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
+              
               if((bin & group_keys[k]) == bin)
                 total += index[group][group_keys[k]];
               
-              
+              // include logic
               if(bool)
               {
                 //console.log("item " + j + ":\t" + group_keys[k])
@@ -277,13 +387,33 @@ $con->close();
                 }
                 selected += index[group][group_keys[k]];
               }
+              
+              // exclude logic
+              if(ex_bool)
+              {
+                if(ex_choice_checked)
+                {
+                  ex_image_keys.add(k);
+                  ex_selection.add(group_keys[k]);
+                }
+                ex_selected += index[group][group_keys[k]];
+                //selected -= index[group][group_keys[k]];
+              }
             
             }
             
             var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
+            //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
+
+            //if(ex_active)
+            //  selected -= ex_selected;
+            //selected = selected < 0 ? 0 : selected;
+
             info.innerHTML = selected + " / " + total;
 
           }
+          
+          image_keys = image_keys.difference(ex_image_keys);
           
           var image_keys_values = image_keys.values();
           var image_keys_count = image_keys.size;
@@ -303,6 +433,9 @@ $con->close();
           group_info.innerHTML = group_selected + " / " + group_total;
 
           // disable output for a category if no choices are selected
+          
+          selection = selection.difference(ex_selection);
+          
           var output = Array.from(selection);
           
           if(output.length == 0)
@@ -327,13 +460,24 @@ $con->close();
       for(var i = 0; i < count; i++)
       {
 
-        category[i].onchange=function()
+        // include category checkbox
+        if(i % 2 == 0)
         {
-          toggle_all(this.checked, this.parentElement.getElementsByClassName("choice"));
-          this.parentElement.getElementsByClassName("choice")[0].onchange();
+          category[i].onchange=function()
+          {
+            toggle_all(this.checked, this.parentElement.getElementsByClassName("choice in"));
+            this.parentElement.getElementsByClassName("choice")[0].onchange();
+          }
         }
-
-        //category[i].onchange();
+        // exclude category checkbox
+        else
+        {
+          category[i].onchange=function()
+          {
+            toggle_all(this.checked, this.parentElement.getElementsByClassName("choice ex"));
+            this.parentElement.getElementsByClassName("choice")[0].onchange();
+          }
+        }
 
       }
 
@@ -349,10 +493,9 @@ $con->close();
 
       }
 
-      var operator = document.getElementsByClassName("operator");
+      // include logic
+      var operator = document.getElementsByClassName("operator in");
       count = operator.length;
-
-
 
       for(var i = 0; i < count; i++)
       {
@@ -361,7 +504,6 @@ $con->close();
         {
           or_op = operator[0].checked;
           and_op = operator[1].checked;
-          xor_op = operator[2].checked;
           
           var category_count = category.length;
           for(var j = 0; j < category_count; j++)
@@ -374,6 +516,28 @@ $con->close();
         operator[i].onchange();
       }
 
+      // exclude logic
+      var ex_operator = document.getElementsByClassName("operator ex");
+      count = ex_operator.length;
+
+      for(var i = 0; i < count; i++)
+      {
+
+        ex_operator[i].onchange=function()
+        {
+          ex_or_op = ex_operator[0].checked;
+          ex_and_op = ex_operator[1].checked;
+          
+          var category_count = category.length;
+          for(var j = 0; j < category_count; j++)
+          {
+            category[j].parentElement.getElementsByClassName("choice")[0].onchange();
+          }
+          
+        }
+
+        ex_operator[i].onchange();
+      }
 
 
       </script>
