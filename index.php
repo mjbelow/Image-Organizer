@@ -250,6 +250,7 @@ $con->close();
           
           // include logic
           var image_keys = new Set();
+          var image_keys_not = new Set();
           var selection = new Set();
           
           // exclude logic
@@ -378,6 +379,10 @@ $con->close();
                   image_keys.add(k);
                   selection.add(group_keys[k]);
                 }
+                else
+                {
+                  image_keys_not.add(k);
+                }
                 selected += index[group][group_keys[k]];
               }
               
@@ -407,9 +412,11 @@ $con->close();
           }
           
           image_keys = image_keys.difference(ex_image_keys);
+          image_keys_not = image_keys_not.difference(ex_image_keys);
           
           var image_keys_values = image_keys.values();
           var image_keys_count = image_keys.size;
+          var image_keys_not_count = image_keys_not.size;
 
           var group_info = group_category.parentElement.getElementsByTagName("span")[0];
           var group_selected = 0;
@@ -428,23 +435,42 @@ $con->close();
           {
             
             var image_keys_values = image_keys.values();
+            var image_keys_not_values = image_keys_not.values();
             var bin = group_choice[j].dataset.bin;
             var selected = 0;
             var choice_checked = group_choice[j].checked;
             
-            for(var k = 0; k < image_keys_count; k++)
+            if(choice_checked)
             {
-              
-              var key = image_keys_values.next().value;
-              
-              
-              if(((bin & group_keys[key]) == bin) && choice_checked)
+              for(var k = 0; k < image_keys_count; k++)
               {
-                selected += index[group][group_keys[key]];
-              }
-              
+                
+                var key = image_keys_values.next().value;
+                
+                
+                if(((bin & group_keys[key]) == bin))
+                {
+                  selected += index[group][group_keys[key]];
+                }
+                
 
-              
+                
+              }
+            }
+            else
+            {
+              for(var k = 0; k < image_keys_not_count; k++)
+              {
+                
+                var key = image_keys_not_values.next().value;
+                
+                if(((bin & group_keys[key]) == bin))
+                {
+                  selected += index[group][group_keys[key]];
+                }
+                
+                
+              }
             }
             
             
