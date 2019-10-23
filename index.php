@@ -403,7 +403,7 @@ $con->close();
             //selected = selected < 0 ? 0 : selected;
 
             info.innerHTML = selected + " / " + total;
-
+            group_choice[j].dataset.total = total;
           }
           
           image_keys = image_keys.difference(ex_image_keys);
@@ -422,6 +422,43 @@ $con->close();
             group_selected += index[group][group_keys[key]];
           
           }
+          
+          
+          for(var j = 0; j < group_count; j++)
+          {
+            
+            var image_keys_values = image_keys.values();
+            var bin = group_choice[j].dataset.bin;
+            var selected = 0;
+            var choice_checked = group_choice[j].checked;
+            
+            for(var k = 0; k < image_keys_count; k++)
+            {
+              
+              var key = image_keys_values.next().value;
+              
+              
+              if(((bin & group_keys[key]) == bin) && choice_checked)
+              {
+                selected += index[group][group_keys[key]];
+              }
+              
+
+              
+            }
+            
+            
+            var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
+            //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
+
+            //if(ex_active)
+            //  selected -= ex_selected;
+            //selected = selected < 0 ? 0 : selected;
+
+            info.innerHTML = selected + " / " + group_choice[j].dataset.total;
+            
+          }
+          
 
           group_info.innerHTML = group_selected + " / " + group_total;
 
