@@ -6,6 +6,7 @@
 <style type="text/css">
 .output {
   width: 100%;
+  
 }
 </style>
 <script type="application/javascript">
@@ -110,10 +111,10 @@ $con->close();
 
 <main>
   <section id="menu">
-    <form id="options" action="components/image page/index.php" target="content" method="get">
+    <form id="options" action="components/image page/index.php" target="content" method="get" onreset="initiate()">
 
       <input type="submit" value="Show Images">
-      <!-- <input type="reset" value="Reset"> -->
+      <input type="reset" value="Reset">
 
       <br>
       <br>
@@ -524,9 +525,7 @@ $con->close();
             toggle_all(this.checked, this.parentElement.getElementsByClassName("choice in"));
             this.parentElement.getElementsByClassName("choice")[0].onchange();
           }
-          
-          // initiate menu
-           category[i].onchange();
+
         }
         // exclude category checkbox
         else
@@ -539,6 +538,25 @@ $con->close();
         }
 
       }
+      
+      // initiate menu function (also used on form reset)
+      function initiate()
+      {
+        
+        var category = document.getElementsByClassName("category");
+        var count = category.length;
+        
+        for(var i = 0; i < count; i++)
+        {
+          category[i].checked=false;
+          category[i].indeterminate=false;
+          category[i].onchange();
+        }
+        
+      }
+      
+      // initiate menu
+      initiate();
 
       function toggle_all(checked, choice)
       {
