@@ -39,7 +39,7 @@ $images = array();
 $query = "select category.name category, image.name image " .
 "from " .
   "(select name, category_id, sum(pow(2, choice_id-1)) choices " .
-    "from image_meta_bak " .
+    "from image " .
     "group by category_id, name " .
     "order by category_id, choices, name) image " .
   "inner join category " .
