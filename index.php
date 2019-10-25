@@ -6,7 +6,11 @@
 <style type="text/css">
 .output {
   width: 100%;
-  
+  display: none;
+}
+
+html, body {
+  height: 100%;
 }
 </style>
 <script type="application/javascript">

@@ -159,11 +159,6 @@ header a:hover {
 	border-bottom: 1px solid hsl(220, 100%, 68.8%);
 }
 
-html,body {
-  height: 100%;
-  margin: 0;
-}
-
 main {
   position: relative;
   height: calc(100% - 60px);

@@ -68,7 +68,7 @@ for($i = 0; $i < $category_count; $i++)
 
   if($i == ($category_count - 1))
     $query .= ")) " .
-    "order by category_id, choices";
+    "order by category_id, choices, image.name";
   else
     $query .= ")) or ";
   
