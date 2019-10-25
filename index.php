@@ -170,6 +170,7 @@ $con->close();
         // category output (used to handle form data)
         var category_output = document.createElement("input");
         category_output.className="output";
+        category_output.disabled="true";
         category_output.name="output[]";
 
         // category choice list
@@ -202,7 +203,7 @@ $con->close();
           choice_item.appendChild(choice_checkbox);
           
           // add choice name
-          choice_item.innerHTML += choice[j] + " (<span></span>)";
+          choice_item.innerHTML += choice[j] + " <span></span>";
           
           // append to choice list
           choice_list.appendChild(choice_item);
@@ -216,7 +217,7 @@ $con->close();
         category_checkbox = category_checkbox.cloneNode(false);
         category_item.appendChild(category_checkbox);
         
-        category_item.innerHTML += category[i] + " (<span></span>)";
+        category_item.innerHTML += category[i] + " <span></span>";
         category_item.appendChild(choice_list);
         
         // append to category list
@@ -313,7 +314,16 @@ $con->close();
           else
             ex_group_category.indeterminate=false;
 
+          // if no images exist for the category, don't go any further
+          if(!index[group])
+            return;
 
+          ////////////////////////////////
+          //                            //
+          //  UPDATE MENU INDEX VALUES  //
+          //                            //
+          ////////////////////////////////
+          
           var group_keys = Object.keys(index[group]);
           var group_keys_count = group_keys.length;
 

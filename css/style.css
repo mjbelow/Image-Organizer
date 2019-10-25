@@ -255,3 +255,14 @@ input[type="reset"]:hover {
   right: 0;
   cursor: zoom-out;
 }
+
+#options span {
+  white-space: nowrap;
+}
+
+#options span:not(:empty):before {
+  content: "(";
+}
+#options span:not(:empty):after {
+  content: ")";
+}
