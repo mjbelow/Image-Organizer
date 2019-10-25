@@ -10,6 +10,7 @@
 }
 </style>
 <script type="application/javascript">
+// source: https://www.geeksforgeeks.org/sets-in-javascript/
 // Performs difference operation between 
 // called set and otherSet 
 Set.prototype.difference = function(otherSet) 
@@ -82,8 +83,9 @@ if ($stmt = $con->prepare($query)) {
 
 
 
-echo "index = JSON.parse('" . json_encode($index) . "');";
-echo "var my_options = JSON.parse('" . json_encode($options) . "');";
+echo "var index = JSON.parse('" . json_encode($index) . "');";
+echo "\n";
+echo "var options = JSON.parse('" . json_encode($options) . "');";
 
 
 
@@ -111,40 +113,44 @@ $con->close();
 
 <main>
   <section id="menu">
-    <form id="options" action="components/image page/index.php" target="content" method="get" onreset="initiate()">
-
-      <input type="submit" value="Show Images">
-      <input type="reset" value="Reset">
-
-      <br>
-      <br>
-      <fieldset>
-        <legend>Include</legend>
-        <input type="radio" name="in_operator" class="operator in" checked>
-        OR
-        <input type="radio" name="in_operator" class="operator in">
-        AND
-        <input type="radio" name="in_operator" class="operator in">
-        XOR
-      </fieldset>
+    <form action="components/image page/index.php" target="content" method="get" onreset="initiate()">
       
-      <br>
+      <div id="form_options">
+        <input type="submit" value="Show Images">
+        <input type="reset" value="Reset">
+
+        <br>
+        <br>
+        <fieldset>
+          <legend>Include</legend>
+          <input type="radio" name="in_operator" class="operator in" checked>
+          OR
+          <input type="radio" name="in_operator" class="operator in">
+          AND
+          <input type="radio" name="in_operator" class="operator in">
+          XOR
+        </fieldset>
+        
+        <br>
+        
+        <fieldset>
+          <legend>Exclude</legend>
+          <input type="radio" name="ex_operator" class="operator ex" checked>
+          OR
+          <input type="radio" name="ex_operator" class="operator ex">
+          AND
+          <input type="radio" name="ex_operator" class="operator ex">
+          XOR
+        </fieldset>
+      </div>
       
-      <fieldset>
-        <legend>Exclude</legend>
-        <input type="radio" name="ex_operator" class="operator ex" checked>
-        OR
-        <input type="radio" name="ex_operator" class="operator ex">
-        AND
-        <input type="radio" name="ex_operator" class="operator ex">
-        XOR
-      </fieldset>
+      <div id="options"></div>
     
       <script type="application/javascript">
       // category list
       var category_list = document.createElement("ul");
 
-      var category = Object.keys(my_options);
+      var category = Object.keys(options);
       var category_count = category.length;
 
       for(var i = 0; i < category_count; i++)
@@ -165,7 +171,7 @@ $con->close();
         // category choice list
         var choice_list = document.createElement("ul");
         
-        var choice = my_options[category[i]];
+        var choice = options[category[i]];
         var choice_count = choice.length;
         
         
