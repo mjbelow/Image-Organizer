@@ -538,25 +538,6 @@ $con->close();
         }
 
       }
-      
-      // initiate menu function (also used on form reset)
-      function initiate()
-      {
-        
-        var category = document.getElementsByClassName("category");
-        var count = category.length;
-        
-        for(var i = 0; i < count; i++)
-        {
-          category[i].checked=false;
-          category[i].indeterminate=false;
-          category[i].onchange();
-        }
-        
-      }
-      
-      // initiate menu
-      initiate();
 
       function toggle_all(checked, choice)
       {
@@ -587,12 +568,8 @@ $con->close();
           {
             category[j].parentElement.getElementsByClassName("choice")[0].onchange();
           }
-          
+
         }
-        
-        // initialize operator values
-        or_op = operator[0].checked;
-        and_op = operator[1].checked;
 
       }
 
@@ -615,12 +592,36 @@ $con->close();
           }
           
         }
-        
-        // initialize operator values
-        ex_or_op = ex_operator[0].checked;
-        ex_and_op = ex_operator[1].checked;
 
       }
+      
+      // initiate menu function (also used on form reset)
+      function initiate()
+      {
+        
+        var category = document.getElementsByClassName("category");
+        var count = category.length;
+        
+        for(var i = 0; i < count; i++)
+        {
+          category[i].checked=false;
+          category[i].indeterminate=false;
+          category[i].onchange();
+        }
+        
+        or_op = true;
+        ex_or_op = true;
+        
+        and_op = false;
+        ex_and_op = false;
+        
+        operator[0].checked = true;
+        ex_operator[0].checked = true;
+        
+      }
+      
+      // initiate menu
+      initiate();
 
 
       </script>
