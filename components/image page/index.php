@@ -37,7 +37,11 @@ $images = array();
 //$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3)) order by image.category_id, image.choices";
 //$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)) order by image.category_id, image.choices";
 $query = "select category.name category, image.name image " .
-"from image " .
+"from " .
+  "(select name, category_id, sum(pow(2, choice_id-1)) choices " .
+    "from image_meta_bak " .
+    "group by category_id, name " .
+    "order by category_id, choices, name) image " .
   "inner join category " .
     "on image.category_id = category.id " .
 "where ";
