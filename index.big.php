@@ -111,6 +111,10 @@ $con->close();
   <form action="components/upload page/image.html" target="content" method="get">
     <button id="upload">Upload</button>
   </form>
+  
+  <input id="login_name" autocomplete="off">
+  <input id="login_pass">
+  
   username
   <a href="#">Log out</a>
 
