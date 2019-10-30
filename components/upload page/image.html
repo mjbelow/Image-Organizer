@@ -17,6 +17,8 @@ options["seasons"] = ["summer","fall","winter","spring"];
 </head>
 <body>
 
+<form action="upload.php" method="post">
+
 <div class="wrapper">
   <header>
     <h1>Upload Images</h1>
@@ -80,12 +82,17 @@ options["seasons"] = ["summer","fall","winter","spring"];
     <ul>
       <!-- <li><span id="reset">reset</span></li>
       <li><span id="send">submit</span></li> -->
-	  <button class="button buttonReset" onclick="alert('Reset')">Reset</button>
-	  <button class=" button buttonSubmit" onclick="alert('Submited')">Submit</button>
+	  <!-- <button class="button buttonReset" onclick="alert('Reset')">Reset</button> -->
+	  <!-- <button class=" button buttonSubmit" onclick="alert('Submited')">Submit</button> -->
+    <input class="button buttonReset" type="reset" value="Reset">
+    <input class="button buttonReset" type="submit" value="Submit">
     </ul>
   </footer> 
   
 </div>
+
+</form>
+
 <div class="notification"></div>
 <footer>
 </footer>
