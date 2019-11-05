@@ -763,18 +763,15 @@ function modify_options(update)
   
   if(update)
     choice.innerHTML="";
+  
   position.innerHTML="";
   
   if(option.selectedIndex==0)
   {
-
     for(i = 0; i < categories_count; i++)
     {
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
-    
-    position.selectedIndex=category.selectedIndex;
-
   }
   else
   {
@@ -782,31 +779,19 @@ function modify_options(update)
     for(i = 0; i < choices_count; i++)
     {
       if(update)
-      {
         choice.innerHTML+="<option>" + options[category.value][i] + "</option>";
-      }
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
 
-    position.selectedIndex=choice.selectedIndex;
 
   }
   
   
-
   if(option.selectedIndex==0)
-  {
     choice.disabled=true;
-    option_name.value=category.value;
-    position.selectedIndex=category.selectedIndex;
-  }
   else
-  {
     choice.disabled=false;
-    option_name.value=choice.value;
-    position.selectedIndex=choice.selectedIndex;
-  }
-  
+      
   if(action.selectedIndex==0)
   {
     position.innerHTML+="<option>" + (i+1) + "</option>";
@@ -817,6 +802,20 @@ function modify_options(update)
       option_name.value="Choice Name";
     option_name.select();
   }
+  else
+  {
+    if(option.selectedIndex==0)
+    {
+      option_name.value=category.value;
+      position.selectedIndex=category.selectedIndex;
+    }
+    else
+    {
+      option_name.value=choice.value;
+      position.selectedIndex=choice.selectedIndex;
+    }
+  }
+  
 }
 
 
