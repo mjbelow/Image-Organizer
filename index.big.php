@@ -129,7 +129,7 @@ $con->close();
         <legend>Modify Options</legend>
 
         Option
-        <select id="option" onchange="change_option()">
+        <select id="option" onchange="modify_options(true)">
           <option>Category</option>
           <option>Choice</option>
         </select>
@@ -137,7 +137,7 @@ $con->close();
         <br>
 
         Action
-        <select id="action">
+        <select id="action" onchange="modify_options(true)">
           <option>Create</option>
           <option>Update</option>
           <option>Delete</option>
@@ -146,12 +146,12 @@ $con->close();
         <hr>
 
         Category
-        <select id="category" onchange="change_choices(this.value)"></select>
+        <select id="category" onchange="modify_options(true)"></select>
 
         <br>
 
         Choice
-        <select id="choice"></select>
+        <select id="choice" onchange="modify_options(false)"></select>
 
         <hr>
 
@@ -751,19 +751,24 @@ for(var i = 0; i < categories_count; i++)
 {  
   category.innerHTML+="<option>" + Object.keys(options)[i] + "</option>";
 }
-//choices.innerHTML="<a><input type='checkbox'>" + options[  Object.keys(options)[0]   ]  [0] + "</a>"
-function change_choices(value)
+
+
+
+function modify_options(update)
 {
   //var choice = Object.keys(
-  var choices_count = options[value].length;
+  var choices_count = options[category.value].length;
   
-  choice.innerHTML="";
+  var i;
+  
+  if(update)
+    choice.innerHTML="";
   position.innerHTML="";
   
   if(option.selectedIndex==0)
   {
 
-    for(var i = 0; i < categories_count; i++)
+    for(i = 0; i < categories_count; i++)
     {
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
@@ -774,9 +779,12 @@ function change_choices(value)
   else
   {
 
-    for(var i = 0; i < choices_count; i++)
+    for(i = 0; i < choices_count; i++)
     {
-      choice.innerHTML+="<option>" + options[value][i] + "</option>";
+      if(update)
+      {
+        choice.innerHTML+="<option>" + options[category.value][i] + "</option>";
+      }
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
 
@@ -784,15 +792,8 @@ function change_choices(value)
 
   }
   
+  
 
-  
-}
-
-function change_option()
-{
-  
-  change_choices(category.value);
-  
   if(option.selectedIndex==0)
   {
     choice.disabled=true;
@@ -805,11 +806,21 @@ function change_option()
     option_name.value=choice.value;
     position.selectedIndex=choice.selectedIndex;
   }
+  
+  if(action.selectedIndex==0)
+  {
+    position.innerHTML+="<option>" + (i+1) + "</option>";
+    position.selectedIndex=i;
+    if(option.selectedIndex==0)
+      option_name.value="Category Name";
+    else
+      option_name.value="Choice Name";
+    option_name.select();
+  }
 }
 
-//category.onchange();
 
-change_option();
+modify_options(true);
 </script>
 
 </body>
