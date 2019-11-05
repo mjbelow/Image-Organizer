@@ -275,3 +275,15 @@ input[type="reset"]:hover {
   border:1px solid;
   border-color: rgba(0, 0, 0, 0.7) rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.7);
 }
+
+#modify hr {
+  margin: 10px 0;
+}
+
+#modify select, #modify input {
+  width: 100%;
+}
+
+:disabled {
+  opacity: 0.3;
+}

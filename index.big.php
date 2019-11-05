@@ -124,39 +124,46 @@ $con->close();
 <main>
   <section id="menu">
   
-    <form method="get" onsubmit="event.preventDefault();document.getElementById('options').removeChild(document.getElementById('options_menu'));build_menu();add_choice_functionality();add_menu_fucntionality();initiate();">
+    <form id="modify" method="get" onsubmit="event.preventDefault();document.getElementById('options').removeChild(document.getElementById('options_menu'));build_menu();add_choice_functionality();add_menu_fucntionality();initiate();">
       <fieldset>
         <legend>Modify Options</legend>
-        
+
         Option
-        <select>
-        <option>Category</option>
-        <option>Choice</option>
+        <select id="option" onchange="change_option()">
+          <option>Category</option>
+          <option>Choice</option>
         </select>
 
         <br>
-        
+
         Action
-        <select>
-        <option>Create</option>
-        <option>Update</option>
-        <option>Delete</option>
+        <select id="action">
+          <option>Create</option>
+          <option>Update</option>
+          <option>Delete</option>
         </select>
 
+        <hr>
+
+        Category
+        <select id="category" onchange="change_choices(this.value)"></select>
+
         <br>
-        <br>
+
+        Choice
+        <select id="choice"></select>
+
+        <hr>
 
         Position
-        <select>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        </select>
+        <select id="position"></select>
 
         <br>
 
         Name
-        <input>
+        <input id="name">
+
+        <hr>
 
         <input type="submit" value="Modify Options">
       </fieldset>
@@ -726,6 +733,83 @@ $con->close();
 
 <script type="application/javascript">
 document.getElementById("frame").src="";
+
+var categories = Object.keys(options);
+var categories_count = categories.length;
+
+
+var option = document.getElementById("option");
+var action = document.getElementById("action");
+
+var category = document.getElementById("category");
+var choice = document.getElementById("choice");
+
+var position = document.getElementById("position");
+var option_name = document.getElementById("name");
+
+for(var i = 0; i < categories_count; i++)
+{  
+  category.innerHTML+="<option>" + Object.keys(options)[i] + "</option>";
+}
+//choices.innerHTML="<a><input type='checkbox'>" + options[  Object.keys(options)[0]   ]  [0] + "</a>"
+function change_choices(value)
+{
+  //var choice = Object.keys(
+  var choices_count = options[value].length;
+  
+  choice.innerHTML="";
+  position.innerHTML="";
+  
+  if(option.selectedIndex==0)
+  {
+
+    for(var i = 0; i < categories_count; i++)
+    {
+      position.innerHTML+="<option>" + (i+1) + "</option>";
+    }
+    
+    position.selectedIndex=category.selectedIndex;
+
+  }
+  else
+  {
+
+    for(var i = 0; i < choices_count; i++)
+    {
+      choice.innerHTML+="<option>" + options[value][i] + "</option>";
+      position.innerHTML+="<option>" + (i+1) + "</option>";
+    }
+
+    position.selectedIndex=choice.selectedIndex;
+
+  }
+  
+
+  
+}
+
+function change_option()
+{
+  
+  change_choices(category.value);
+  
+  if(option.selectedIndex==0)
+  {
+    choice.disabled=true;
+    option_name.value=category.value;
+    position.selectedIndex=category.selectedIndex;
+  }
+  else
+  {
+    choice.disabled=false;
+    option_name.value=choice.value;
+    position.selectedIndex=choice.selectedIndex;
+  }
+}
+
+//category.onchange();
+
+change_option();
 </script>
 
 </body>
