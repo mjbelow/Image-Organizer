@@ -656,8 +656,8 @@ $con->close();
           {
             or_op = operator[0].checked;
             and_op = operator[1].checked;
-            
             var category_count = category.length;
+            console.log(category[0]);
             for(var j = 0; j < category_count; j++)
             {
               category[j].parentElement.getElementsByClassName("choice")[0].onchange();
@@ -741,28 +741,27 @@ var categories_count = categories.length;
 var option = document.getElementById("option");
 var action = document.getElementById("action");
 
-var category = document.getElementById("category");
-var choice = document.getElementById("choice");
+var category_mod = document.getElementById("category");
+var choice_mod = document.getElementById("choice");
 
 var position = document.getElementById("position");
 var option_name = document.getElementById("name");
 
 for(var i = 0; i < categories_count; i++)
 {  
-  category.innerHTML+="<option>" + Object.keys(options)[i] + "</option>";
+  category_mod.innerHTML+="<option>" + Object.keys(options)[i] + "</option>";
 }
-
 
 
 function modify_options(update)
 {
-  //var choice = Object.keys(
-  var choices_count = options[category.value].length;
+  
+  var choices_count = options[category_mod.value].length;
   
   var i;
   
   if(update)
-    choice.innerHTML="";
+    choice_mod.innerHTML="";
   
   position.innerHTML="";
   
@@ -779,7 +778,7 @@ function modify_options(update)
     for(i = 0; i < choices_count; i++)
     {
       if(update)
-        choice.innerHTML+="<option>" + options[category.value][i] + "</option>";
+        choice_mod.innerHTML+="<option>" + options[category_mod.value][i] + "</option>";
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
 
@@ -788,9 +787,9 @@ function modify_options(update)
   
   
   if(option.selectedIndex==0)
-    choice.disabled=true;
+    choice_mod.disabled=true;
   else
-    choice.disabled=false;
+    choice_mod.disabled=false;
       
   if(action.selectedIndex==0)
   {
@@ -806,13 +805,13 @@ function modify_options(update)
   {
     if(option.selectedIndex==0)
     {
-      option_name.value=category.value;
-      position.selectedIndex=category.selectedIndex;
+      option_name.value=category_mod.value;
+      position.selectedIndex=category_mod.selectedIndex;
     }
     else
     {
-      option_name.value=choice.value;
-      position.selectedIndex=choice.selectedIndex;
+      option_name.value=choice_mod.value;
+      position.selectedIndex=choice_mod.selectedIndex;
     }
   }
   
