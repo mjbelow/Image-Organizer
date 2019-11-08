@@ -41,7 +41,7 @@ $port=3306;
 $socket="";
 $user="c2375a05";
 $password="!c2375aU!";
-$dbname="c2375a05proj";
+$dbname="c2375a05test";
 
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
@@ -121,47 +121,99 @@ $con->close();
 </header>
 
 
+<script>
+function submit_options(e)
+{
+  e.preventDefault();
+  /*
+  document.getElementById("option");
+  document.getElementById("action");
+  document.getElementById("category");
+  document.getElementById("choice");
+  document.getElementById("position");
+  document.getElementById("name");
+  
+  document.getElementById("frame").src="";
+
+  var categories = Object.keys(options);
+  var categories_count = categories.length;
+
+
+  var option = document.getElementById("option");
+  var action = document.getElementById("action");
+
+  var category_mod = document.getElementById("category");
+  var choice_mod = document.getElementById("choice");
+
+  var position = document.getElementById("position");
+  var option_name = document.getElementById("name");
+  */
+  
+  console.log("option:"+ option.value);
+  console.log("action:" +action.value);
+  console.log("category_mod:"+ category_mod.value);
+  console.log("choice_mod:" +choice_mod.value);
+  console.log("position:" +position.value);
+  console.log("option_name:" +option_name.value);
+  
+  
+  
+  
+  
+  
+  
+  
+  document.getElementById('options').removeChild(document.getElementById('options_menu'));
+  build_menu();
+  add_choice_functionality();
+  add_menu_fucntionality();
+  initiate();
+}
+</script>
+
 <main>
   <section id="menu">
   
-    <form id="modify" method="get" onsubmit="event.preventDefault();document.getElementById('options').removeChild(document.getElementById('options_menu'));build_menu();add_choice_functionality();add_menu_fucntionality();initiate();">
+    <!--<form id="modify" method="get" onsubmit="submit_options(event)" action="modify options.php" target="content" method="post">-->
+    <form id="modify" action="modify options.php" target="content" method="post">
+     <!--action="components/image page/index.php" target="content" method="get" onreset="initiate()-->
       <fieldset>
         <legend>Modify Options</legend>
 
         Option
-        <select id="option" onchange="modify_options(true)">
-          <option>Category</option>
-          <option>Choice</option>
+        <select id="option" onchange="modify_options(true)" name="option">
+          <option>category</option>
+          <option>choice</option>
         </select>
 
         <br>
 
         Action
-        <select id="action" onchange="modify_options(true)">
-          <option>Create</option>
-          <option>Update</option>
-          <option>Delete</option>
+        <select id="action" onchange="modify_options(true)" name="action">
+          <option>create</option>
+          <option>update</option>
+          <option>delete</option>
         </select>
 
         <hr>
 
         Category
-        <select id="category" onchange="modify_options(true)"></select>
+        <select id="category" onchange="modify_options(true)" name="category"></select>
 
         <br>
 
         Choice
-        <select id="choice" onchange="modify_options(false)"></select>
+        <select id="choice" onchange="modify_options(false)" name="choice"></select>
 
         <hr>
 
         Position
-        <select id="position"></select>
+        <select id="position" name="position"></select>
 
         <br>
 
         Name
-        <input id="name">
+        <input id="name" name="name">
 
         <hr>
 
