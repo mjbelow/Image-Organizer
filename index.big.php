@@ -678,15 +678,20 @@ function submit_options(e)
         for(var i = 0; i < count; i++)
         {
 
+          // if no choices exist for category, assign a blank function
+          if(!Boolean(category[i].parentElement.getElementsByClassName("choice").length))
+          {
+            category[i].onchange=function(){}
+          }
+
           // include category checkbox
-          if(i % 2 == 0)
+          else if(i % 2 == 0)
           {
             category[i].onchange=function()
             {
               toggle_all(this.checked, this.parentElement.getElementsByClassName("choice in"));
               this.parentElement.getElementsByClassName("choice")[0].onchange();
             }
-
           }
           // exclude category checkbox
           else
