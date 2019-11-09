@@ -13,6 +13,7 @@ html, body {
   height: 100%;
 }
 </style>
+<script type="application/javascript" src="js/jquery.min.js"></script>
 <script type="application/javascript">
 // source: https://www.geeksforgeeks.org/sets-in-javascript/
 // Performs difference operation between 
@@ -101,6 +102,8 @@ $con->close();
 
 ?>
 
+var submit=true;
+
 </script>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
@@ -126,49 +129,41 @@ $con->close();
 function submit_options(e)
 {
   e.preventDefault();
-  /*
-  document.getElementById("option");
-  document.getElementById("action");
-  document.getElementById("category");
-  document.getElementById("choice");
-  document.getElementById("position");
-  document.getElementById("name");
   
-  document.getElementById("frame").src="";
+  // prevent form from being submitted until it has finished processing
+  if(!submit)
+    return;
+  submit=false;
 
-  var categories = Object.keys(options);
-  var categories_count = categories.length;
+  $.post("modify options.php",
+    {
+      option: option.value,
+      action: action.value,
+      category: category_mod.value,
+      choice: choice_mod.value,
+      position: position.value,
+      name: option_name.value,
+      category_id: category_id.value,
+      choice_id: choice_id.value
+    },
+    function(data)
+    {
+      
+      var user_data = JSON.parse(data);
+      index=user_data[0];
+      options=user_data[1];
+      
+      update_category_menu();
+      modify_options(true);
+      document.getElementById('options').removeChild(document.getElementById('options_menu'));
+      build_menu();
+      add_choice_functionality();
+      add_menu_fucntionality();
+      initiate();
+      submit=true;
+    }
+  );
 
-
-  var option = document.getElementById("option");
-  var action = document.getElementById("action");
-
-  var category_mod = document.getElementById("category");
-  var choice_mod = document.getElementById("choice");
-
-  var position = document.getElementById("position");
-  var option_name = document.getElementById("name");
-  */
-  
-  console.log("option:"+ option.value);
-  console.log("action:" +action.value);
-  console.log("category_mod:"+ category_mod.value);
-  console.log("choice_mod:" +choice_mod.value);
-  console.log("position:" +position.value);
-  console.log("option_name:" +option_name.value);
-  
-  
-  
-  
-  
-  
-  
-  
-  document.getElementById('options').removeChild(document.getElementById('options_menu'));
-  build_menu();
-  add_choice_functionality();
-  add_menu_fucntionality();
-  initiate();
 }
 </script>
 
@@ -176,7 +171,8 @@ function submit_options(e)
   <section id="menu">
   
     <!--<form id="modify" method="get" onsubmit="submit_options(event)" action="modify options.php" target="content" method="post">-->
-    <form id="modify" action="modify options.php" target="content" method="post">
+    <!--<form id="modify" action="modify options.php" target="content" method="post" onsubmit="submit_options(event)">-->
+    <form id="modify" onsubmit="submit_options(event)">
      <!--action="components/image page/index.php" target="content" method="get" onreset="initiate()-->
       <fieldset>
         <legend>Modify Options</legend>
@@ -218,8 +214,10 @@ function submit_options(e)
 
         <hr>
         
-        <input id="category_id" name="category_id">
-        <input id="choice_id" name="choice_id">
+        <div class="output">
+          <input id="category_id" name="category_id">
+          <input id="choice_id" name="choice_id">
+        </div>
         
         <input type="submit" value="Modify Options">
       </fieldset>
@@ -795,8 +793,6 @@ function submit_options(e)
 <script type="application/javascript">
 document.getElementById("frame").src="";
 
-var categories = Object.keys(options);
-var categories_count = categories.length;
 
 
 var option = document.getElementById("option");
@@ -810,11 +806,22 @@ var choice_id = document.getElementById("choice_id");
 var position = document.getElementById("position");
 var option_name = document.getElementById("name");
 
-for(var i = 0; i < categories_count; i++)
-{  
-  category_mod.innerHTML+="<option>" + Object.keys(options)[i] + "</option>";
-}
+var categories = Object.keys(options);
+var categories_count = categories.length;
 
+function update_category_menu()
+{
+
+  categories = Object.keys(options);
+  categories_count = categories.length;
+
+  category_mod.innerHTML="";
+  
+  for(var i = 0; i < categories_count; i++)
+  {  
+    category_mod.innerHTML+="<option>" + Object.keys(options)[i] + "</option>";
+  }
+}
 
 function modify_options(update)
 {
@@ -891,7 +898,7 @@ function modify_options(update)
   
 }
 
-
+update_category_menu();
 modify_options(true);
 </script>
 

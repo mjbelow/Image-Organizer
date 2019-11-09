@@ -175,5 +175,45 @@ else
   }
 }
 
+// sql query to build index
+$query = "select category, choice, count from my_index";
+
+if ($stmt = $con->prepare($query)) {
+    $stmt->execute();
+    $stmt->bind_result($category, $choice, $count);
+    while ($stmt->fetch()) {
+
+      // hacky solution . " " so because we need a string for this value so it can convert to BigInt easily
+      // if we don't add a space, javascript automatically interprets it as a number_format
+      $index[$category][$choice . " "] = $count;
+
+    }
+    $stmt->close();
+}
+
+
+// sql query to build menu
+$query = "select category, choice from my_options";
+
+if ($stmt = $con->prepare($query)) {
+    $stmt->execute();
+    $stmt->bind_result($category, $choice);
+    while ($stmt->fetch()) {
+      
+      if(!isset($options[$category])) {
+        
+        $options[$category] = array();
+        
+      }
+
+      if($choice)
+        array_push($options[$category], $choice);
+      
+    }
+    $stmt->close();
+}
+
+echo json_encode(array($index, $options));
+
 $con->close();
 ?>
