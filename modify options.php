@@ -62,7 +62,7 @@ else if($_POST["action"]=="update")
       " set id=-1, name='" . $_POST["name"] . "'" .
       " where id=" . $_POST["category_id"]
     )->execute();
-    
+
     //decrease categories above position by 1
     if($_POST["position"] > $_POST["category_id"])
     {
@@ -70,7 +70,7 @@ else if($_POST["action"]=="update")
       (
         "update " . $_POST["option"] .
         " set id= id-1" .
-        " where id >= " .  $_POST["category_id"] .
+        " where id >= " .  $_POST["category_id"] . " and id <= " . $_POST["position"] .
         " order by id asc"
       )->execute();
     }
@@ -81,11 +81,11 @@ else if($_POST["action"]=="update")
       (
         "update " . $_POST["option"] .
         " set id= id+1" .
-        " where id <= " .  $_POST["category_id"] . " and id != -1" .
+        " where id <= " .  $_POST["category_id"] . " and id >= " . $_POST["position"] . " and id != -1" .
         " order by id desc"
       )->execute();
     }
-    
+
     // change id to user's input
     $con->prepare
     (
@@ -128,10 +128,7 @@ else if($_POST["action"]=="update")
         " order by id desc"
       )->execute();
     }
-    
-      echo "update " . $_POST["option"] .
-      " set id=" . $_POST["position"] .
-      " where id=-1";
+
     // change id to user's input
     $con->prepare
     (
