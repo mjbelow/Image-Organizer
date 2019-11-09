@@ -80,7 +80,8 @@ if ($stmt = $con->prepare($query)) {
         
       }
 
-      array_push($options[$category], $choice);
+      if($choice)
+        array_push($options[$category], $choice);
       
     }
     $stmt->close();
@@ -216,7 +217,10 @@ function submit_options(e)
         <input id="name" name="name">
 
         <hr>
-
+        
+        <input id="category_id" name="category_id">
+        <input id="choice_id" name="choice_id">
+        
         <input type="submit" value="Modify Options">
       </fieldset>
     </form>
@@ -795,6 +799,8 @@ var action = document.getElementById("action");
 
 var category_mod = document.getElementById("category");
 var choice_mod = document.getElementById("choice");
+var category_id = document.getElementById("category_id");
+var choice_id = document.getElementById("choice_id");
 
 var position = document.getElementById("position");
 var option_name = document.getElementById("name");
@@ -817,16 +823,23 @@ function modify_options(update)
   
   position.innerHTML="";
   
+  position.disabled=false;
+  option_name.disabled=false;
+  
   if(option.selectedIndex==0)
   {
+
+    choice_mod.disabled=true;
     for(i = 0; i < categories_count; i++)
     {
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
+
   }
   else
   {
 
+    choice_mod.disabled=false;
     for(i = 0; i < choices_count; i++)
     {
       if(update)
@@ -834,15 +847,8 @@ function modify_options(update)
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
 
-
   }
-  
-  
-  if(option.selectedIndex==0)
-    choice_mod.disabled=true;
-  else
-    choice_mod.disabled=false;
-      
+
   if(action.selectedIndex==0)
   {
     position.innerHTML+="<option>" + (i+1) + "</option>";
@@ -853,8 +859,16 @@ function modify_options(update)
       option_name.value="Choice Name";
     option_name.select();
   }
+  else if(action.selectedIndex==2)
+  {
+    position.disabled=true;
+    position.innerHTML="";
+    option_name.disabled=true;
+    option_name.value="";
+  }
   else
   {
+    
     if(option.selectedIndex==0)
     {
       option_name.value=category_mod.value;
@@ -866,6 +880,9 @@ function modify_options(update)
       position.selectedIndex=choice_mod.selectedIndex;
     }
   }
+  
+  category_id.value=category_mod.selectedIndex+1;
+  choice_id.value=choice_mod.selectedIndex+1;
   
 }
 
