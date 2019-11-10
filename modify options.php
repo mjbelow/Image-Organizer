@@ -149,13 +149,13 @@ else
       "delete from " . $_POST["option"] .
       " where id=" . $_POST["category_id"]
     )->execute();
-    $con-->prepare
+    $con->prepare
     (
       "update " . $_POST["option"] . 
       " set id=id-1" .
       " where id >= " . $_POST["category_id"] .
       " order by id asc"
-    );
+    )->execute();
   }
   // delete choice
   else
@@ -165,13 +165,13 @@ else
       "delete from " . $_POST["option"] .
       " where id=" . $_POST["choice_id"] . " and category_id=" . $_POST["category_id"]
     )->execute();
-    $con-->prepare
+    $con->prepare
     (
       "update " . $_POST["option"] . 
       " set id=id-1" .
-      " where id >= " . $_POST["position"] . " and category_id=" . $_POST["category_id"] .
+      " where id >= " . $_POST["choice_id"] . " and category_id=" . $_POST["category_id"] .
       " order by id asc"
-    );
+    )->execute();
   }
 }
 

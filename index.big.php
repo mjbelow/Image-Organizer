@@ -176,7 +176,7 @@ function submit_options(e)
   <section id="menu">
   
     <!--<form id="modify" method="get" onsubmit="submit_options(event)" action="modify options.php" target="content" method="post">-->
-    <!--<form id="modify" action="modify options.php" target="content" method="post" onsubmit="submit_options(event)">-->
+    <!--<form id="modify" action="modify options.php" target="content" method="post">-->
     <form id="modify" onsubmit="submit_options(event)">
      <!--action="components/image page/index.php" target="content" method="get" onreset="initiate()-->
       <fieldset>
