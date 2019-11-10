@@ -191,29 +191,30 @@ if ($stmt = $con->prepare($query)) {
     $stmt->close();
 }
 
-
 // sql query to build menu
-$query = "select category, choice from my_options";
+$query = "select id, category, choice from my_options";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
-    $stmt->bind_result($category, $choice);
+    $stmt->bind_result($id, $category, $choice);
     while ($stmt->fetch()) {
       
-      if(!isset($options[$category])) {
+      $categories[$id]=$category;
+      
+      if(!isset($choices[$id])) {
         
-        $options[$category] = array();
+        $choices[$id] = array();
         
       }
 
       if($choice)
-        array_push($options[$category], $choice);
+        array_push($choices[$id], $choice);
       
     }
     $stmt->close();
 }
 
-echo json_encode(array($index, $options));
+echo json_encode(array($index, $categories, $choices));
 
 $con->close();
 ?>

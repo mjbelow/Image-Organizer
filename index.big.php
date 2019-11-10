@@ -68,21 +68,23 @@ if ($stmt = $con->prepare($query)) {
 
 
 // sql query to build menu
-$query = "select category, choice from my_options";
+$query = "select id, category, choice from my_options";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
-    $stmt->bind_result($category, $choice);
+    $stmt->bind_result($id, $category, $choice);
     while ($stmt->fetch()) {
       
-      if(!isset($options[$category])) {
+      $categories[$id]=$category;
+      
+      if(!isset($choices[$id])) {
         
-        $options[$category] = array();
+        $choices[$id] = array();
         
       }
 
       if($choice)
-        array_push($options[$category], $choice);
+        array_push($choices[$id], $choice);
       
     }
     $stmt->close();
@@ -93,7 +95,9 @@ if ($stmt = $con->prepare($query)) {
 
 echo "var index = JSON.parse('" . json_encode($index) . "');";
 echo "\n";
-echo "var options = JSON.parse('" . json_encode($options) . "');";
+echo "var my_categories = JSON.parse('" . json_encode($categories) . "');";
+echo "\n";
+echo "var my_choices = JSON.parse('" . json_encode($choices) . "');";
 
 
 
@@ -151,7 +155,8 @@ function submit_options(e)
       
       var user_data = JSON.parse(data);
       index=user_data[0];
-      options=user_data[1];
+      my_categories=user_data[1];
+      my_choices=user_data[2];
       
       update_category_menu();
       modify_options(true);
@@ -264,7 +269,8 @@ function submit_options(e)
         var category_list = document.createElement("ul");
         category_list.id="options_menu";
 
-        var category = Object.keys(options);
+        //var category = Object.keys(options);
+        var category = my_categories;
         var category_count = category.length;
 
         for(var i = 0; i < category_count; i++)
@@ -286,7 +292,8 @@ function submit_options(e)
           // category choice list
           var choice_list = document.createElement("ul");
           
-          var choice = options[category[i]];
+          //var choice = options[category[i]];
+          var choice = my_choices[i];
           var choice_count = choice.length;
           
           
@@ -806,27 +813,28 @@ var choice_id = document.getElementById("choice_id");
 var position = document.getElementById("position");
 var option_name = document.getElementById("name");
 
-var categories = Object.keys(options);
+var categories = my_categories;
 var categories_count = categories.length;
 
 function update_category_menu()
 {
 
-  categories = Object.keys(options);
+  categories = my_categories;
   categories_count = categories.length;
 
   category_mod.innerHTML="";
   
   for(var i = 0; i < categories_count; i++)
   {  
-    category_mod.innerHTML+="<option>" + Object.keys(options)[i] + "</option>";
+    category_mod.innerHTML+="<option>" + categories[i] + "</option>";
   }
 }
 
 function modify_options(update)
 {
   
-  var choices_count = options[category_mod.value].length;
+  //var choices_count = options[category_mod.value].length;
+  var choices_count = my_choices[category_mod.selectedIndex].length;
   
   var i;
   
@@ -855,7 +863,7 @@ function modify_options(update)
     for(i = 0; i < choices_count; i++)
     {
       if(update)
-        choice_mod.innerHTML+="<option>" + options[category_mod.value][i] + "</option>";
+        choice_mod.innerHTML+="<option>" + my_choices[category_mod.selectedIndex][i] + "</option>";
       position.innerHTML+="<option>" + (i+1) + "</option>";
     }
 
