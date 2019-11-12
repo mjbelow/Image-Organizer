@@ -7,6 +7,9 @@
 
 <body>
 
+
+
+
 Static content
 <br>
 
@@ -40,6 +43,15 @@ following PHP code generated using MySQL Workbench:
 Tools > Utilities > Copy as PHP Code (Iterate SELECT Results)
 
 */
+
+
+
+$imageFile = $_POST["fileToUpload"]; // Image file being Uploaded.
+
+
+
+
+
 $query = "select date_format(curtime(), '%M %D, %Y')";
 
 
@@ -59,11 +71,70 @@ $con->close();
 
 
 
+// if form method="post", you would use $_POST["test"] to get the values
+ $test = $_GET["test"]; 
 
-?>
+// if form method="post", you would use $_POST["test"] to get the values
+$choices = $_GET["choice"];
+/*
+echo "<br>";
+echo "Number of options : "; 
+echo count($test);
+
+echo "<br>";
+echo "Number of choices : " ; 
+echo count(options[0]);
+
+echo "<br>";
+echo "Image : " ; 
+ */
+
+//echo readfile($imageFile);
+
+/* } */
+
+
+//echo readfile($target_file);
+
+//$imageFile = $_POST["fileToUpload"];
+
+echo "<br>";
+echo "Image Name:   ";
+echo $_POST['imageName'];
+echo "<br>";
+echo "File Uploaded: $imageFile ";
+
+echo "<br>";
+echo "Category Chosen:  ";
+echo $_POST["category"];
+echo "<br>";
+
+echo "Number of Choices Selected:   ";
+
+$choices = $_POST["choice"];
+echo count($choices);
+    
+ 
+    
+
+
+
+//echo count(options[0]);
+echo "<br>";
 
 
 
 
+echo "Choices Selected:   ";
+
+$name = $_GET["choice[]"];
+   
+foreach ($name as $choice){ 
+    echo $choice."<br />";
+    echo "<br>";
+}
+
+
+ ?>
 </body>
 </html>

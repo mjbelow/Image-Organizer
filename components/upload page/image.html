@@ -1,121 +1,126 @@
+<!-- ----------------------------------------------------------------------- -->
+<!-- Image Upload Page-->
+
 <!DOCTYPE html>
 <head>
-    <!-- <link rel="stylesheet/less" href="style.less"> -->
-     <!--  <script src="less.js" type="text/javascript"></script> -->
-	  
-	  <!-- <link rel="stylesheet" type="text/css" href="CSS.css"> -->
-   
-<style>
-@import url("style.css"); /* Using a url */
-</style>
-<meta charset="utf-8">
-<script>
-var options = {}
-options["animals"] = ["dog","cat","penguin"];
-options["seasons"] = ["summer","fall","winter","spring"];
-</script>
+   <style>
+      @import url("style.css"); /* Using a url */
+   </style>
+   <meta charset="utf-8">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   <script>     
+   </script>
 </head>
 <body>
+   <form action="upload.php" method="post">
+      <div class="wrapper">
+         <header>
+            <h1>Upload Images</h1>
+            <span></span>
+         </header>
+         <div class="sections">
+            <section class="active">
+               <input type="text" placeholder="Image Title" id="title" name="imageName"/>
+               <select id="category" onchange="change_choices(this.value)" name="category">
+               </select>
+               <div id="choice" class="dropdown" name="choice">
+                  <div class="dropbtn">Choices</div>
+                  <div class="dropdown-content" id="choices" name="choices">
+   <!-- <form method="get">
+   </form> -->
+   </div>
+   </div>
+   <div class="image-upload-wrap">
+   <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" id="fileToUpload" name="fileToUpload"/>
+   
+   <div class="drag-text">
+   <h3 id = "test1">Drag and Drop or Click to Browse</h3>
+   </div>
+   </div>
+   </section>
 
-<form action="upload.php" method="post">
+   <section>
+   <input type="text" placeholder="Topic" id="topic"/>
+   <textarea placeholder="something..." id="msg"></textarea>
+   </section>
+   </div>
+   <footer>
+   <ul>
+        <!--  <img id="blah" src="#" alt="your image" /> -->
+   <input class="button buttonReset" type="reset" value="Reset">
+   <input class="button buttonReset" type="submit" value="Submit">
+   </ul>
+   </footer> 
+   </div>
+   </form>
+   <div class="notification"></div>
+   <footer></footer>
+   <script>
+      var options = ["animals", "seasons", "other"]
+      options["animals"] = ["dog","cat","penguin"];
+      options["seasons"] = ["summer","fall","winter","spring"];
+      options["other"] = ["otherchoice"];
+      
+      var category = document.getElementById("category");
+      
+      var choices = document.getElementById("choices");
+      
+      var select = document.getElementById("category");
+      //var options = ["1", "2", "3", "4", "5"];
+      
+      
+      for(var i = 0; i < options.length; i++) {
+          var opt = options[i];
+          var el = document.createElement("option");
+          el.textContent = opt;
+          el.value = opt;
+          select.appendChild(el);
+      }
+      
+      function change_choices(value)
+      {
+      
+      var myDiv = document.getElementById("choices");
+      
+      myDiv.innerHTML = "";
+      
+      for(var i = 0; i < options[value].length - 1; i++) {
+          var checkBox = document.createElement("input");
+          var a = document.createElement("a");
+          a.setAttribute("name","choice[]");
+          checkBox.type = "checkbox";
+          checkBox.value = options[value][i];
+          checkBox.setAttribute("name", "choice[]");
+          checkBox.name = "choice[]";
+          a.appendChild(checkBox);
+         // a.setAttribute("name", "choice[]");
+          myDiv.appendChild(a);
+          a.appendChild(document.createTextNode(options[value][i]));  
+      	}     
+      }
+      
+      category.onchange();
 
-<div class="wrapper">
-  <header>
-    <h1>Upload Images</h1>
-    <span></span>
-  </header>
-  
-  
-  
-  <div class="sections">
+      function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
     
-    <section class="active">
-      <input type="text" placeholder="Image Title" id="title"/>
-      <select id="category" onchange="change_choices(this.value)">
-        <option value="Category1">Category1</option>
-        <option value="Category2">Category2</option>
-        <option value="Category3">Category3</option>
-        <option value="Category4">Category4</option>
-      </select>
-      
-      <div id="choice" class="dropdown">
-        <div class="dropbtn">Choices</div>
-		<div class="dropdown-content" id="choices">
-		<a><input type="checkbox"> Choice 1</a>
-		<a><input type="checkbox"> Choice 2</a>
-		<a><input type="checkbox"> Choice 3</a>
-		</div>
-		</div>
-	  
-      
-      
-		<div class="image-upload-wrap">
-		<input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
-		<div class="drag-text">
-		<h3>Drag and Drop or Click to Browse</h3>
-		</div>
-		</div>
-	  
-      
-      
-    </section>
-	
-	<!-- <div class="ways">
-    <ul>
-      <li class="active">
-        submit
-      </li>
-      <li>
-        discussion
-      </li>
-    </ul>
-  </div> -->
+    reader.onload = function(e) {
+      $('#blah').attr('src', e.target.result);
+    }
+    
+    reader.readAsDataURL(input.files[0]);
+    document.getElementById("test1").innerHTML = document.getElementById("fileToUpload").value.split(/(\\|\/)/g).pop();
 
-    <section>
-      <input type="text" placeholder="Topic" id="topic"/>
-      <textarea placeholder="something..." id="msg"></textarea>
-    </section>
-  
-  </div>
-  
-  <footer>
-    <ul>
-      <!-- <li><span id="reset">reset</span></li>
-      <li><span id="send">submit</span></li> -->
-	  <!-- <button class="button buttonReset" onclick="alert('Reset')">Reset</button> -->
-	  <!-- <button class=" button buttonSubmit" onclick="alert('Submited')">Submit</button> -->
-    <input class="button buttonReset" type="reset" value="Reset">
-    <input class="button buttonReset" type="submit" value="Submit">
-    </ul>
-  </footer> 
-  
-</div>
-
-</form>
-
-<div class="notification"></div>
-<footer>
-</footer>
-
-<script>
-
-var category = document.getElementById("category");
-
-var choices = document.getElementById("choices");
-
-
-category.innerHTML="<option>" + Object.keys(options)[0] + "</option>";
-category.innerHTML+="<option>" + Object.keys(options)[1] + "</option>";
-
-//choices.innerHTML="<a><input type='checkbox'>" + options[  Object.keys(options)[0]   ]  [0] + "</a>"
-
-function change_choices(value)
-{
-choices.innerHTML="<a><input type='checkbox'>" + options[value]  [0] + "</a>"
+   
+  }
 }
 
-category.onchange();
-</script>
+$("#imgInp").change(function() {
+  readURL(this);
+});
 
+
+   </script>
 </body>
 </html>
