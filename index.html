@@ -36,31 +36,50 @@ Set.prototype.difference = function(otherSet)
     return differenceSet; 
 }
 
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 var index;
 var my_categories;
 var my_choices;
 
-$.post('build.php',{},
-function(data)
-{
-  
-  data = JSON.parse(data);
-  index = data[0];
-  my_categories = data[1];
-  my_choices = data[2];
+$.post('build.php',
+  {
+    username: getCookie("username")
+  },
+  function(data)
+  {
+    
+    data = JSON.parse(data);
+    index = data[0];
+    my_categories = data[1];
+    my_choices = data[2];
 
-  //document.getElementById('options').removeChild(document.getElementById('options_menu'));
-  build_menu();
-  add_choice_functionality();
-  add_menu_fucntionality();
-  initiate();
-  assign_vars();
-  update_category_menu();
-  modify_options(true);
-  submit=true;
-  $("#selection").show();
+    //document.getElementById('options').removeChild(document.getElementById('options_menu'));
+    build_menu();
+    add_choice_functionality();
+    add_menu_fucntionality();
+    initiate();
+    assign_vars();
+    update_category_menu();
+    modify_options(true);
+    submit=true;
+    $("#selection").show();
 
-}
+  }
 );
 
 
@@ -99,6 +118,7 @@ function submit_options(e)
 
   $.post("build.php",
     {
+      username: getCookie("username"),
       modify: true,
       option: option.value,
       action: action.value,
