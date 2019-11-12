@@ -4,7 +4,7 @@
 <title>Main Page</title>
 <meta charset="UTF-8">
 <style type="text/css">
-.output {
+.output, #selection {
   width: 100%;
   display: none;
 }
@@ -58,6 +58,7 @@ function(data)
   update_category_menu();
   modify_options(true);
   submit=true;
+  $("#selection").show();
 
 }
 );
@@ -96,8 +97,9 @@ function submit_options(e)
     return;
   submit=false;
 
-  $.post("modify options.php",
+  $.post("build.php",
     {
+      modify: true,
       option: option.value,
       action: action.value,
       category: category_mod.value,
@@ -134,621 +136,623 @@ function submit_options(e)
 <main>
   <section id="menu">
   
-    <!--<form id="modify" method="get" onsubmit="submit_options(event)" action="modify options.php" target="content" method="post">-->
-    <!--<form id="modify" action="modify options.php" target="content" method="post">-->
-    <form id="modify" onsubmit="submit_options(event)">
-     <!--action="components/image page/index.php" target="content" method="get" onreset="initiate()-->
-      <fieldset>
-        <legend>Modify Options</legend>
+    <div id="selection">
+      <!--<form id="modify" method="get" onsubmit="submit_options(event)" action="modify options.php" target="content" method="post">-->
+      <!--<form id="modify" action="modify options.php" target="content" method="post">-->
+      <form id="modify" onsubmit="submit_options(event)">
+       <!--action="components/image page/index.php" target="content" method="get" onreset="initiate()-->
+        <fieldset>
+          <legend>Modify Options</legend>
 
-        Option
-        <select id="option" onchange="modify_options(true)" name="option">
-          <option>category</option>
-          <option>choice</option>
-        </select>
+          Option
+          <select id="option" onchange="modify_options(true)" name="option">
+            <option>category</option>
+            <option>choice</option>
+          </select>
 
-        <br>
+          <br>
 
-        Action
-        <select id="action" onchange="modify_options(true)" name="action">
-          <option>create</option>
-          <option>update</option>
-          <option>delete</option>
-        </select>
+          Action
+          <select id="action" onchange="modify_options(true)" name="action">
+            <option>create</option>
+            <option>update</option>
+            <option>delete</option>
+          </select>
 
-        <hr>
+          <hr>
 
-        Category
-        <select id="category" onchange="modify_options(true)" name="category"></select>
+          Category
+          <select id="category" onchange="modify_options(true)" name="category"></select>
 
-        <br>
+          <br>
 
-        Choice
-        <select id="choice" onchange="modify_options(false)" name="choice"></select>
+          Choice
+          <select id="choice" onchange="modify_options(false)" name="choice"></select>
 
-        <hr>
+          <hr>
 
-        Position
-        <select id="position" name="position"></select>
+          Position
+          <select id="position" name="position"></select>
 
-        <br>
+          <br>
 
-        Name
-        <input id="name" name="name">
+          Name
+          <input id="name" name="name">
 
-        <hr>
+          <hr>
+          
+          <div class="output">
+            <input id="category_id" name="category_id">
+            <input id="choice_id" name="choice_id">
+          </div>
+          
+          <input type="submit" value="Modify Options">
+        </fieldset>
+      </form>
+      
+      <form action="components/image page/index.php" target="content" method="get" onreset="initiate()">
         
-        <div class="output">
-          <input id="category_id" name="category_id">
-          <input id="choice_id" name="choice_id">
+        <div id="form_options">
+          <input type="submit" value="Show Images">
+          <input type="reset" value="Reset">
+
+          <br>
+          <br>
+          <fieldset>
+            <legend>Include</legend>
+            <input type="radio" name="in_operator" class="operator in" checked>
+            OR
+            <input type="radio" name="in_operator" class="operator in">
+            AND
+            <input type="radio" name="in_operator" class="operator in">
+            XOR
+          </fieldset>
+          
+          <br>
+          
+          <fieldset>
+            <legend>Exclude</legend>
+            <input type="radio" name="ex_operator" class="operator ex" checked>
+            OR
+            <input type="radio" name="ex_operator" class="operator ex">
+            AND
+            <input type="radio" name="ex_operator" class="operator ex">
+            XOR
+          </fieldset>
+          
         </div>
         
-        <input type="submit" value="Modify Options">
-      </fieldset>
-    </form>
-    
-    <form action="components/image page/index.php" target="content" method="get" onreset="initiate()">
+        <div id="options"></div>
       
-      <div id="form_options">
-        <input type="submit" value="Show Images">
-        <input type="reset" value="Reset">
-
-        <br>
-        <br>
-        <fieldset>
-          <legend>Include</legend>
-          <input type="radio" name="in_operator" class="operator in" checked>
-          OR
-          <input type="radio" name="in_operator" class="operator in">
-          AND
-          <input type="radio" name="in_operator" class="operator in">
-          XOR
-        </fieldset>
-        
-        <br>
-        
-        <fieldset>
-          <legend>Exclude</legend>
-          <input type="radio" name="ex_operator" class="operator ex" checked>
-          OR
-          <input type="radio" name="ex_operator" class="operator ex">
-          AND
-          <input type="radio" name="ex_operator" class="operator ex">
-          XOR
-        </fieldset>
-        
-      </div>
-      
-      <div id="options"></div>
-    
-      <script type="application/javascript">
-      function build_menu()
-      {
-        // category list
-        var category_list = document.createElement("ul");
-        category_list.id="options_menu";
-
-        //var category = Object.keys(options);
-        var category = my_categories;
-        var category_count = category.length;
-
-        for(var i = 0; i < category_count; i++)
+        <script type="application/javascript">
+        function build_menu()
         {
-          // category item
-          var category_item = document.createElement("li");
-          
-          // category checkbox option
-          var category_checkbox = document.createElement("input");
-          category_checkbox.type="checkbox";
-          category_checkbox.className="category";
-          
-          // category output (used to handle form data)
-          var category_output = document.createElement("input");
-          category_output.className="output";
-          category_output.disabled="true";
-          category_output.name="output[]";
+          // category list
+          var category_list = document.createElement("ul");
+          category_list.id="options_menu";
 
-          // category choice list
-          var choice_list = document.createElement("ul");
-          
-          //var choice = options[category[i]];
-          var choice = my_choices[i];
-          var choice_count = choice.length;
-          
-          
-          for(var j = 0; j < choice_count; j++)
+          //var category = Object.keys(options);
+          var category = my_categories;
+          var category_count = category.length;
+
+          for(var i = 0; i < category_count; i++)
           {
-            // choice item
-            var choice_item = document.createElement("li");
+            // category item
+            var category_item = document.createElement("li");
             
-            // choice checkbox option (include)
-            var choice_checkbox = document.createElement("input");
-            choice_checkbox.type="checkbox";
-            choice_checkbox.className="choice in";
-            choice_checkbox.dataset.group=(i+1);
-            choice_checkbox.dataset.bin=Math.pow(2, j);
+            // category checkbox option
+            var category_checkbox = document.createElement("input");
+            category_checkbox.type="checkbox";
+            category_checkbox.className="category";
+            
+            // category output (used to handle form data)
+            var category_output = document.createElement("input");
+            category_output.className="output";
+            category_output.disabled="true";
+            category_output.name="output[]";
 
-            // append (include) to choice item
-            choice_item.appendChild(choice_checkbox);
+            // category choice list
+            var choice_list = document.createElement("ul");
             
-            // choice checkbox option (exclude);
-            choice_checkbox = choice_checkbox.cloneNode(false);
-            choice_checkbox.className="choice ex";
+            //var choice = options[category[i]];
+            var choice = my_choices[i];
+            var choice_count = choice.length;
             
-            // append (exclude) to choice item
-            choice_item.appendChild(choice_checkbox);
             
-            // add choice name
-            choice_item.innerHTML += choice[j] + " <span></span>";
+            for(var j = 0; j < choice_count; j++)
+            {
+              // choice item
+              var choice_item = document.createElement("li");
+              
+              // choice checkbox option (include)
+              var choice_checkbox = document.createElement("input");
+              choice_checkbox.type="checkbox";
+              choice_checkbox.className="choice in";
+              choice_checkbox.dataset.group=(i+1);
+              choice_checkbox.dataset.bin=Math.pow(2, j);
+
+              // append (include) to choice item
+              choice_item.appendChild(choice_checkbox);
+              
+              // choice checkbox option (exclude);
+              choice_checkbox = choice_checkbox.cloneNode(false);
+              choice_checkbox.className="choice ex";
+              
+              // append (exclude) to choice item
+              choice_item.appendChild(choice_checkbox);
+              
+              // add choice name
+              choice_item.innerHTML += choice[j] + " <span></span>";
+              
+              // append to choice list
+              choice_list.appendChild(choice_item);
+            }
             
-            // append to choice list
-            choice_list.appendChild(choice_item);
+            // append to category item
+            category_item.appendChild(category_output);
+            
+            
+            category_item.appendChild(category_checkbox);
+            category_checkbox = category_checkbox.cloneNode(false);
+            category_item.appendChild(category_checkbox);
+            
+            category_item.innerHTML += category[i] + " <span></span>";
+            category_item.appendChild(choice_list);
+            
+            // append to category list
+            category_list.appendChild(category_item);
+            
+            // append to document
+            document.getElementById("options").appendChild(category_list);
           }
-          
-          // append to category item
-          category_item.appendChild(category_output);
-          
-          
-          category_item.appendChild(category_checkbox);
-          category_checkbox = category_checkbox.cloneNode(false);
-          category_item.appendChild(category_checkbox);
-          
-          category_item.innerHTML += category[i] + " <span></span>";
-          category_item.appendChild(choice_list);
-          
-          // append to category list
-          category_list.appendChild(category_item);
-          
-          // append to document
-          document.getElementById("options").appendChild(category_list);
         }
-      }
 
-      //build_menu();
+        //build_menu();
 
-      //////////////////
-      //              //
-      //  MENU LOGIC  //
-      //              //
-      //////////////////
-      
-      var or_op = true;
-      var and_op = false;
+        //////////////////
+        //              //
+        //  MENU LOGIC  //
+        //              //
+        //////////////////
+        
+        var or_op = true;
+        var and_op = false;
 
-      var ex_or_op = true;
-      var ex_and_op = false;
+        var ex_or_op = true;
+        var ex_and_op = false;
 
-      var choice;
-      
-      function add_choice_functionality()
-      {
-        choice = document.getElementsByClassName("choice");
-        var count = choice.length;
-
-        for(var i = 0; i < count; i++)
+        var choice;
+        
+        function add_choice_functionality()
         {
+          choice = document.getElementsByClassName("choice");
+          var count = choice.length;
 
-          choice[i].onchange=function()
+          for(var i = 0; i < count; i++)
           {
 
-            // include logic
-            var group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[0];
-            var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice in");    
-            
-            // exclude logic
-            var ex_group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[1];
-            var ex_group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice ex");
-            
-            var group_output = this.parentElement.parentElement.parentElement.getElementsByClassName("output")[0];
-            var group_count = group_choice.length;
-            var group = this.dataset.group;
-            
-            // include logic
-            var image_keys = new Set();
-            var image_keys_not = new Set();
-            var selection = new Set();
-            
-            // exclude logic
-            var ex_image_keys = new Set();
-            var ex_selection = new Set();
-            
-            var group_selected = 0;
-
-            // include logic
-            var active = 0n;
-            
-            // exclude logic
-            var ex_active = 0n;
-
-            var max = 0n;
-            
-            for(var j = 0; j < group_count; j++)
-            {
-            
-              // include logic
-              if(group_choice[j].checked)
-                active |= BigInt(group_choice[j].dataset.bin);
-              
-              //exclude logic
-              if(ex_group_choice[j].checked)
-                ex_active |= BigInt(ex_group_choice[j].dataset.bin);
-              
-              max |= BigInt(group_choice[j].dataset.bin);
-            }
-
-            // change state of category checkbox
-            // include logic
-            if(active == max)
-              group_category.checked=true;
-            else
-              group_category.checked=false;
-            if(active != max && active != 0)
-              group_category.indeterminate=true;
-            else
-              group_category.indeterminate=false;
-            
-            // exclude logic
-            if(ex_active == max)
-              ex_group_category.checked=true;
-            else
-              ex_group_category.checked=false;
-            if(ex_active != max && ex_active != 0)
-              ex_group_category.indeterminate=true;
-            else
-              ex_group_category.indeterminate=false;
-
-            // if no images exist for the category, don't go any further
-            if(!index[group])
-              return;
-
-            ////////////////////////////////
-            //                            //
-            //  UPDATE MENU INDEX VALUES  //
-            //                            //
-            ////////////////////////////////
-            
-            var group_keys = Object.keys(index[group]);
-            var group_keys_count = group_keys.length;
-
-            var group_total = 0;
-
-            for(var j = 0; j < group_keys_count; j++)
+            choice[i].onchange=function()
             {
 
-              group_total += index[group][group_keys[j]];
+              // include logic
+              var group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[0];
+              var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice in");    
+              
+              // exclude logic
+              var ex_group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[1];
+              var ex_group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice ex");
+              
+              var group_output = this.parentElement.parentElement.parentElement.getElementsByClassName("output")[0];
+              var group_count = group_choice.length;
+              var group = this.dataset.group;
+              
+              // include logic
+              var image_keys = new Set();
+              var image_keys_not = new Set();
+              var selection = new Set();
+              
+              // exclude logic
+              var ex_image_keys = new Set();
+              var ex_selection = new Set();
+              
+              var group_selected = 0;
 
-            }
-            
-            // update value for all choices
-            for(var j = 0; j < group_count; j++)
-            {
               // include logic
-              var selected = 0;
+              var active = 0n;
               
               // exclude logic
-              var ex_selected = 0;
+              var ex_active = 0n;
+
+              var max = 0n;
               
-              var total = 0;
-              var bin = BigInt(group_choice[j].dataset.bin);
-              
-              // include logic
-              var n;
-              if(or_op | and_op)
-                n = active | bin;
-              else
-                n = active & ~bin;
-              
-              // exclude logic
-              var ex_n;
-              if(ex_or_op | ex_and_op)
-                ex_n = ex_active | bin;
-              else
-                ex_n = ex_active & ~bin;
-              
-              // include logic
-              var choice_checked = group_choice[j].checked;
-              
-              // exclude logic
-              var ex_choice_checked = ex_group_choice[j].checked;
-              
-              for(var k = 0; k < group_keys_count; k++)
+              for(var j = 0; j < group_count; j++)
               {
-                
-                group_keys[k] = BigInt(group_keys[k]);
-                
-                // include logic
-                var bool;
-                if(and_op)
-                  bool = ((n & group_keys[k]) == n);
-                else if(or_op)
-                  bool = ((bin & group_keys[k]) == bin);
-                else
-                  bool = (((n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
-                
-                // exclude logic
-                var ex_bool;
-                if(ex_and_op)
-                  ex_bool = ((ex_n & group_keys[k]) == ex_n);
-                else if(ex_or_op)
-                  ex_bool = ((bin & group_keys[k]) == bin);
-                else
-                  ex_bool = (((ex_n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
-                
-                if((bin & group_keys[k]) == bin)
-                  total += index[group][group_keys[k]+" "];
-                
-                // include logic
-                if(bool)
-                {
-                  //console.log("item " + j + ":\t" + group_keys[k])
-                  if(choice_checked)
-                  {
-                    image_keys.add(k);
-                    selection.add(group_keys[k]);
-                  }
-                  else
-                  {
-                    image_keys_not.add(k);
-                  }
-                  selected += index[group][group_keys[k]];
-                }
-                
-                // exclude logic
-                if(ex_bool)
-                {
-                  if(ex_choice_checked)
-                  {
-                    ex_image_keys.add(k);
-                    ex_selection.add(group_keys[k]);
-                  }
-                  ex_selected += index[group][group_keys[k]];
-                  //selected -= index[group][group_keys[k]];
-                }
               
+                // include logic
+                if(group_choice[j].checked)
+                  active |= BigInt(group_choice[j].dataset.bin);
+                
+                //exclude logic
+                if(ex_group_choice[j].checked)
+                  ex_active |= BigInt(ex_group_choice[j].dataset.bin);
+                
+                max |= BigInt(group_choice[j].dataset.bin);
+              }
+
+              // change state of category checkbox
+              // include logic
+              if(active == max)
+                group_category.checked=true;
+              else
+                group_category.checked=false;
+              if(active != max && active != 0)
+                group_category.indeterminate=true;
+              else
+                group_category.indeterminate=false;
+              
+              // exclude logic
+              if(ex_active == max)
+                ex_group_category.checked=true;
+              else
+                ex_group_category.checked=false;
+              if(ex_active != max && ex_active != 0)
+                ex_group_category.indeterminate=true;
+              else
+                ex_group_category.indeterminate=false;
+
+              // if no images exist for the category, don't go any further
+              if(!index[group])
+                return;
+
+              ////////////////////////////////
+              //                            //
+              //  UPDATE MENU INDEX VALUES  //
+              //                            //
+              ////////////////////////////////
+              
+              var group_keys = Object.keys(index[group]);
+              var group_keys_count = group_keys.length;
+
+              var group_total = 0;
+
+              for(var j = 0; j < group_keys_count; j++)
+              {
+
+                group_total += index[group][group_keys[j]];
+
               }
               
-              var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
-              //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
+              // update value for all choices
+              for(var j = 0; j < group_count; j++)
+              {
+                // include logic
+                var selected = 0;
+                
+                // exclude logic
+                var ex_selected = 0;
+                
+                var total = 0;
+                var bin = BigInt(group_choice[j].dataset.bin);
+                
+                // include logic
+                var n;
+                if(or_op | and_op)
+                  n = active | bin;
+                else
+                  n = active & ~bin;
+                
+                // exclude logic
+                var ex_n;
+                if(ex_or_op | ex_and_op)
+                  ex_n = ex_active | bin;
+                else
+                  ex_n = ex_active & ~bin;
+                
+                // include logic
+                var choice_checked = group_choice[j].checked;
+                
+                // exclude logic
+                var ex_choice_checked = ex_group_choice[j].checked;
+                
+                for(var k = 0; k < group_keys_count; k++)
+                {
+                  
+                  group_keys[k] = BigInt(group_keys[k]);
+                  
+                  // include logic
+                  var bool;
+                  if(and_op)
+                    bool = ((n & group_keys[k]) == n);
+                  else if(or_op)
+                    bool = ((bin & group_keys[k]) == bin);
+                  else
+                    bool = (((n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
+                  
+                  // exclude logic
+                  var ex_bool;
+                  if(ex_and_op)
+                    ex_bool = ((ex_n & group_keys[k]) == ex_n);
+                  else if(ex_or_op)
+                    ex_bool = ((bin & group_keys[k]) == bin);
+                  else
+                    ex_bool = (((ex_n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
+                  
+                  if((bin & group_keys[k]) == bin)
+                    total += index[group][group_keys[k]+" "];
+                  
+                  // include logic
+                  if(bool)
+                  {
+                    //console.log("item " + j + ":\t" + group_keys[k])
+                    if(choice_checked)
+                    {
+                      image_keys.add(k);
+                      selection.add(group_keys[k]);
+                    }
+                    else
+                    {
+                      image_keys_not.add(k);
+                    }
+                    selected += index[group][group_keys[k]];
+                  }
+                  
+                  // exclude logic
+                  if(ex_bool)
+                  {
+                    if(ex_choice_checked)
+                    {
+                      ex_image_keys.add(k);
+                      ex_selection.add(group_keys[k]);
+                    }
+                    ex_selected += index[group][group_keys[k]];
+                    //selected -= index[group][group_keys[k]];
+                  }
+                
+                }
+                
+                var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
+                //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
 
-              //if(ex_active)
-              //  selected -= ex_selected;
-              //selected = selected < 0 ? 0 : selected;
+                //if(ex_active)
+                //  selected -= ex_selected;
+                //selected = selected < 0 ? 0 : selected;
 
-              info.innerHTML = selected + " / " + total;
-              group_choice[j].dataset.total = total;
-            }
-            
-            image_keys = image_keys.difference(ex_image_keys);
-            image_keys_not = image_keys_not.difference(ex_image_keys);
-            
-            var image_keys_values = image_keys.values();
-            var image_keys_count = image_keys.size;
-            var image_keys_not_count = image_keys_not.size;
-
-            var group_info = group_category.parentElement.getElementsByTagName("span")[0];
-            var group_selected = 0;
-            
-            for(var j = 0; j < image_keys_count; j++)
-            {
-              var key = image_keys_values.next().value;
+                info.innerHTML = selected + " / " + total;
+                group_choice[j].dataset.total = total;
+              }
               
-              
-              group_selected += index[group][group_keys[key]+" "];
-            
-            }
-            
-            
-            for(var j = 0; j < group_count; j++)
-            {
+              image_keys = image_keys.difference(ex_image_keys);
+              image_keys_not = image_keys_not.difference(ex_image_keys);
               
               var image_keys_values = image_keys.values();
-              var image_keys_not_values = image_keys_not.values();
-              var bin = BigInt(group_choice[j].dataset.bin);
-              var selected = 0;
-              var choice_checked = group_choice[j].checked;
-              
-              if(choice_checked)
-              {
-                for(var k = 0; k < image_keys_count; k++)
-                {
-                  
-                  var key = image_keys_values.next().value;
-                  
-                  
-                  if(((bin & group_keys[key]) == bin))
-                  {
-                    selected += index[group][group_keys[key]+" "];
-                  }
-                  
+              var image_keys_count = image_keys.size;
+              var image_keys_not_count = image_keys_not.size;
 
-                  
+              var group_info = group_category.parentElement.getElementsByTagName("span")[0];
+              var group_selected = 0;
+              
+              for(var j = 0; j < image_keys_count; j++)
+              {
+                var key = image_keys_values.next().value;
+                
+                
+                group_selected += index[group][group_keys[key]+" "];
+              
+              }
+              
+              
+              for(var j = 0; j < group_count; j++)
+              {
+                
+                var image_keys_values = image_keys.values();
+                var image_keys_not_values = image_keys_not.values();
+                var bin = BigInt(group_choice[j].dataset.bin);
+                var selected = 0;
+                var choice_checked = group_choice[j].checked;
+                
+                if(choice_checked)
+                {
+                  for(var k = 0; k < image_keys_count; k++)
+                  {
+                    
+                    var key = image_keys_values.next().value;
+                    
+                    
+                    if(((bin & group_keys[key]) == bin))
+                    {
+                      selected += index[group][group_keys[key]+" "];
+                    }
+                    
+
+                    
+                  }
                 }
+                else
+                {
+                  for(var k = 0; k < image_keys_not_count; k++)
+                  {
+                    
+                    var key = image_keys_not_values.next().value;
+                    
+                    if(((bin & group_keys[key]) == bin))
+                    {
+                      selected += index[group][group_keys[key]+" "];
+                    }
+                    
+                    
+                  }
+                }
+                
+                
+                var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
+                //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
+
+                //if(ex_active)
+                //  selected -= ex_selected;
+                //selected = selected < 0 ? 0 : selected;
+
+                info.innerHTML = selected + " / " + group_choice[j].dataset.total;
+                
+              }
+              
+
+              group_info.innerHTML = group_selected + " / " + group_total;
+
+              // disable output for a category if no choices are selected
+              
+              selection = selection.difference(ex_selection);
+              
+              var output = Array.from(selection);
+              
+              if(output.length == 0)
+              {
+                group_output.disabled=true;
+                group_output.value = group;
               }
               else
               {
-                for(var k = 0; k < image_keys_not_count; k++)
-                {
-                  
-                  var key = image_keys_not_values.next().value;
-                  
-                  if(((bin & group_keys[key]) == bin))
-                  {
-                    selected += index[group][group_keys[key]+" "];
-                  }
-                  
-                  
-                }
+                group_output.disabled=false;
+                group_output.value = group + "," + output;
               }
-              
-              
-              var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
-              //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
 
-              //if(ex_active)
-              //  selected -= ex_selected;
-              //selected = selected < 0 ? 0 : selected;
-
-              info.innerHTML = selected + " / " + group_choice[j].dataset.total;
-              
             }
-            
 
-            group_info.innerHTML = group_selected + " / " + group_total;
+          }
+        }
+        
+        //add_choice_functionality();
+        
+        function toggle_all(checked, choice)
+        {
 
-            // disable output for a category if no choices are selected
-            
-            selection = selection.difference(ex_selection);
-            
-            var output = Array.from(selection);
-            
-            if(output.length == 0)
+          var count = choice.length;
+
+          for(var i = 0; i < count; i++)
+          {
+            choice[i].checked = checked;
+          }
+
+        }
+
+        var category, operator, ex_operator;
+
+        function add_menu_fucntionality()
+        {
+
+          category = document.getElementsByClassName("category");
+          var count = category.length;
+
+          for(var i = 0; i < count; i++)
+          {
+
+            // if no choices exist for category, assign a blank function
+            if(!Boolean(category[i].parentElement.getElementsByClassName("choice").length))
             {
-              group_output.disabled=true;
-              group_output.value = group;
+              category[i].onchange=function(){}
             }
+
+            // include category checkbox
+            else if(i % 2 == 0)
+            {
+              category[i].onchange=function()
+              {
+                toggle_all(this.checked, this.parentElement.getElementsByClassName("choice in"));
+                this.parentElement.getElementsByClassName("choice")[0].onchange();
+              }
+            }
+            // exclude category checkbox
             else
             {
-              group_output.disabled=false;
-              group_output.value = group + "," + output;
+              category[i].onchange=function()
+              {
+                toggle_all(this.checked, this.parentElement.getElementsByClassName("choice ex"));
+                this.parentElement.getElementsByClassName("choice")[0].onchange();
+              }
             }
 
           }
 
-        }
-      }
-      
-      //add_choice_functionality();
-      
-      function toggle_all(checked, choice)
-      {
 
-        var count = choice.length;
+          // include logic
+          operator = document.getElementsByClassName("operator in");
+          count = operator.length;
 
-        for(var i = 0; i < count; i++)
-        {
-          choice[i].checked = checked;
-        }
-
-      }
-
-      var category, operator, ex_operator;
-
-      function add_menu_fucntionality()
-      {
-
-        category = document.getElementsByClassName("category");
-        var count = category.length;
-
-        for(var i = 0; i < count; i++)
-        {
-
-          // if no choices exist for category, assign a blank function
-          if(!Boolean(category[i].parentElement.getElementsByClassName("choice").length))
+          for(var i = 0; i < count; i++)
           {
-            category[i].onchange=function(){}
-          }
 
-          // include category checkbox
-          else if(i % 2 == 0)
-          {
-            category[i].onchange=function()
+            operator[i].onchange=function()
             {
-              toggle_all(this.checked, this.parentElement.getElementsByClassName("choice in"));
-              this.parentElement.getElementsByClassName("choice")[0].onchange();
+              or_op = operator[0].checked;
+              and_op = operator[1].checked;
+              var category_count = category.length;
+              console.log(category[0]);
+              for(var j = 0; j < category_count; j++)
+              {
+                category[j].parentElement.getElementsByClassName("choice")[0].onchange();
+              }
+
             }
+
           }
-          // exclude category checkbox
-          else
+
+          // exclude logic
+          ex_operator = document.getElementsByClassName("operator ex");
+          count = ex_operator.length;
+
+          for(var i = 0; i < count; i++)
           {
-            category[i].onchange=function()
+
+            ex_operator[i].onchange=function()
             {
-              toggle_all(this.checked, this.parentElement.getElementsByClassName("choice ex"));
-              this.parentElement.getElementsByClassName("choice")[0].onchange();
+              ex_or_op = ex_operator[0].checked;
+              ex_and_op = ex_operator[1].checked;
+              
+              var category_count = category.length;
+              for(var j = 0; j < category_count; j++)
+              {
+                category[j].parentElement.getElementsByClassName("choice")[0].onchange();
+              }
+              
             }
+
           }
-
+          
         }
-
-
-        // include logic
-        operator = document.getElementsByClassName("operator in");
-        count = operator.length;
-
-        for(var i = 0; i < count; i++)
+        
+        //add_menu_fucntionality();
+        
+        // initiate menu function (also used on form reset)
+        function initiate()
         {
-
-          operator[i].onchange=function()
+          
+          var category = document.getElementsByClassName("category");
+          var count = category.length;
+          
+          for(var i = 0; i < count; i++)
           {
-            or_op = operator[0].checked;
-            and_op = operator[1].checked;
-            var category_count = category.length;
-            console.log(category[0]);
-            for(var j = 0; j < category_count; j++)
-            {
-              category[j].parentElement.getElementsByClassName("choice")[0].onchange();
-            }
-
+            category[i].checked=false;
+            category[i].indeterminate=false;
+            category[i].onchange();
           }
-
-        }
-
-        // exclude logic
-        ex_operator = document.getElementsByClassName("operator ex");
-        count = ex_operator.length;
-
-        for(var i = 0; i < count; i++)
-        {
-
-          ex_operator[i].onchange=function()
-          {
-            ex_or_op = ex_operator[0].checked;
-            ex_and_op = ex_operator[1].checked;
-            
-            var category_count = category.length;
-            for(var j = 0; j < category_count; j++)
-            {
-              category[j].parentElement.getElementsByClassName("choice")[0].onchange();
-            }
-            
-          }
-
+          
+          or_op = true;
+          ex_or_op = true;
+          
+          and_op = false;
+          ex_and_op = false;
+          
+          operator[0].checked = true;
+          ex_operator[0].checked = true;
+          
         }
         
-      }
-      
-      //add_menu_fucntionality();
-      
-      // initiate menu function (also used on form reset)
-      function initiate()
-      {
-        
-        var category = document.getElementsByClassName("category");
-        var count = category.length;
-        
-        for(var i = 0; i < count; i++)
-        {
-          category[i].checked=false;
-          category[i].indeterminate=false;
-          category[i].onchange();
-        }
-        
-        or_op = true;
-        ex_or_op = true;
-        
-        and_op = false;
-        ex_and_op = false;
-        
-        operator[0].checked = true;
-        ex_operator[0].checked = true;
-        
-      }
-      
-      // initiate menu
-      //initiate();
+        // initiate menu
+        //initiate();
 
 
-      </script>
-    </form>
+        </script>
+      </form>
+    </div>
   </section>
   <iframe id="frame" name="content"></iframe>
 
