@@ -36,75 +36,32 @@ Set.prototype.difference = function(otherSet)
     return differenceSet; 
 }
 
-<?php
-$host="127.0.0.1";
-$port=3306;
-$socket="";
-$user="c2375a05";
-$password="!c2375aU!";
-$dbname="c2375a05test";
+var index;
+var my_categories;
+var my_choices;
 
-$con = new mysqli($host, $user, $password, $dbname, $port, $socket)
-	or die ('Could not connect to the database server' . mysqli_connect_error());
+$.post('build.php',{},
+function(data)
+{
+  
+  data = JSON.parse(data);
+  index = data[0];
+  my_categories = data[1];
+  my_choices = data[2];
 
-// index to store values needed for interactive menu
-//$index = array();
+  //document.getElementById('options').removeChild(document.getElementById('options_menu'));
+  build_menu();
+  add_choice_functionality();
+  add_menu_fucntionality();
+  initiate();
+  assign_vars();
+  update_category_menu();
+  modify_options(true);
+  submit=true;
 
-// sql query to build index
-$query = "select category, choice, count from my_index";
-
-if ($stmt = $con->prepare($query)) {
-    $stmt->execute();
-    $stmt->bind_result($category, $choice, $count);
-    while ($stmt->fetch()) {
-
-      // hacky solution . " " so because we need a string for this value so it can convert to BigInt easily
-      // if we don't add a space, javascript automatically interprets it as a number_format
-      $index[$category][$choice . " "] = $count;
-
-    }
-    $stmt->close();
 }
+);
 
-
-// sql query to build menu
-$query = "select id, category, choice from my_options";
-
-if ($stmt = $con->prepare($query)) {
-    $stmt->execute();
-    $stmt->bind_result($id, $category, $choice);
-    while ($stmt->fetch()) {
-      
-      $categories[$id]=$category;
-      
-      if(!isset($choices[$id])) {
-        
-        $choices[$id] = array();
-        
-      }
-
-      if($choice)
-        array_push($choices[$id], $choice);
-      
-    }
-    $stmt->close();
-}
-
-
-
-
-echo "var index = JSON.parse('" . json_encode($index) . "');";
-echo "\n";
-echo "var my_categories = JSON.parse('" . json_encode($categories) . "');";
-echo "\n";
-echo "var my_choices = JSON.parse('" . json_encode($choices) . "');";
-
-
-
-$con->close();
-
-
-?>
 
 var submit=true;
 
@@ -157,10 +114,12 @@ function submit_options(e)
       index=user_data[0];
       my_categories=user_data[1];
       my_choices=user_data[2];
+      debug=user_data[3];
       
       update_category_menu();
       modify_options(true);
-      document.getElementById('options').removeChild(document.getElementById('options_menu'));
+      if(document.getElementById('options_menu'))
+        document.getElementById('options').removeChild(document.getElementById('options_menu'));
       build_menu();
       add_choice_functionality();
       add_menu_fucntionality();
@@ -345,7 +304,7 @@ function submit_options(e)
         }
       }
 
-      build_menu();
+      //build_menu();
 
       //////////////////
       //              //
@@ -658,7 +617,7 @@ function submit_options(e)
         }
       }
       
-      add_choice_functionality();
+      //add_choice_functionality();
       
       function toggle_all(checked, choice)
       {
@@ -757,7 +716,7 @@ function submit_options(e)
         
       }
       
-      add_menu_fucntionality();
+      //add_menu_fucntionality();
       
       // initiate menu function (also used on form reset)
       function initiate()
@@ -785,7 +744,7 @@ function submit_options(e)
       }
       
       // initiate menu
-      initiate();
+      //initiate();
 
 
       </script>
@@ -801,20 +760,37 @@ function submit_options(e)
 document.getElementById("frame").src="";
 
 
+var option;
+var action;
 
-var option = document.getElementById("option");
-var action = document.getElementById("action");
+var category_mod;
+var choice_mod;
+var category_id;
+var choice_id;
 
-var category_mod = document.getElementById("category");
-var choice_mod = document.getElementById("choice");
-var category_id = document.getElementById("category_id");
-var choice_id = document.getElementById("choice_id");
+var position;
+var option_name;
 
-var position = document.getElementById("position");
-var option_name = document.getElementById("name");
+var categories;
+var categories_count;
 
-var categories = my_categories;
-var categories_count = categories.length;
+function assign_vars()
+{
+option = document.getElementById("option");
+action = document.getElementById("action");
+
+category_mod = document.getElementById("category");
+choice_mod = document.getElementById("choice");
+category_id = document.getElementById("category_id");
+choice_id = document.getElementById("choice_id");
+
+position = document.getElementById("position");
+option_name = document.getElementById("name");
+
+categories = my_categories;
+categories_count = categories.length;
+}
+
 
 function update_category_menu()
 {
@@ -834,7 +810,7 @@ function modify_options(update)
 {
   
   //var choices_count = options[category_mod.value].length;
-  var choices_count = my_choices[category_mod.selectedIndex].length;
+  var choices_count = my_choices[category_mod.selectedIndex] ? my_choices[category_mod.selectedIndex].length : 0;
   
   var i;
   
@@ -906,8 +882,8 @@ function modify_options(update)
   
 }
 
-update_category_menu();
-modify_options(true);
+//update_category_menu();
+//modify_options(true);
 </script>
 
 </body>
