@@ -56,21 +56,20 @@
    <div class="notification"></div>
    <footer></footer>
    <script>
-      var options = ["animals", "seasons", "other"]
-      options["animals"] = ["dog","cat","penguin"];
-      options["seasons"] = ["summer","fall","winter","spring"];
-      options["other"] = ["otherchoice"];
+   
+      var my_categories = ["animals", "season"];
+      var my_choices = [["dog","cat","penguin"], ["summer","fall","winter","spring"]];
+
       
       var category = document.getElementById("category");
       
       var choices = document.getElementById("choices");
       
       var select = document.getElementById("category");
-      //var options = ["1", "2", "3", "4", "5"];
       
       
-      for(var i = 0; i < options.length; i++) {
-          var opt = options[i];
+      for(var i = 0; i < my_categories.length; i++) {
+          var opt = my_categories[i];
           var el = document.createElement("option");
           el.textContent = opt;
           el.value = opt;
@@ -84,18 +83,18 @@
       
       myDiv.innerHTML = "";
       
-      for(var i = 0; i < options[value].length - 1; i++) {
+      for(var i = 0; i < my_choices[category.selectedIndex].length; i++) {
           var checkBox = document.createElement("input");
           var a = document.createElement("a");
           a.setAttribute("name","choice[]");
           checkBox.type = "checkbox";
-          checkBox.value = options[value][i];
+          checkBox.value = my_choices[category.selectedIndex][i];
           checkBox.setAttribute("name", "choice[]");
           checkBox.name = "choice[]";
           a.appendChild(checkBox);
          // a.setAttribute("name", "choice[]");
           myDiv.appendChild(a);
-          a.appendChild(document.createTextNode(options[value][i]));  
+          a.appendChild(document.createTextNode(my_choices[category.selectedIndex][i]));  
       	}     
       }
       
