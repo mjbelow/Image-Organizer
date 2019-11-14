@@ -429,3 +429,10 @@ footer a {
   color: #7A7B7F;
   
 }
+
+.outputImage{
+  width: 300;
+  height: 300;
+  border-radius: 8px;
+
+}

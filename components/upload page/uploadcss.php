@@ -23,9 +23,9 @@ Tools > Utilities > Copy as PHP Code (Connect to Server)
 $host="127.0.0.1";
 $port=3306;
 $socket="";
-$user="c2375a04";
+$user="c2375a05";
 $password="c2375aU!";
-$dbname="c2375a04test";
+$dbname="c2375a05test";
 
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
    or die ('Could not connect to the database server' . mysqli_connect_error());
@@ -40,7 +40,7 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
             <span></span>
          </header>
          
-   <p class = uploadResults> Image uploaded: <?php echo $_POST['imageName']; ?>
+   <p class = uploadResults>
       <br>
       Image Name: <?php echo $imageFile; ?>
       <br>
@@ -63,28 +63,20 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
    
 
       //header("content-type:image/jpeg");
-      echo $_POST["fileToUpload"];
+     // echo $_POST["fileToUpload"];
+     ?>
    
+     Image Uploaded : 
+     <br>
+     <?php
+     $imageData = base64_encode(file_get_contents($imageFile));
+     echo '<img class= "outputImage" src="data:image/jpeg;base64,'.$imageData.'" width="300" height="300">';
    
+     ?>
+     
+</p>         
+           
    
-   
-   ?>
-
-
-
-
-
-      
-</p>
-   
-   <div class="image-upload-wrap">
-   <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" id="fileToUpload" name="fileToUpload"/>
-   
-   <div class="drag-text">
-   <h3 id = "picture">Drag and Drop or Click to Browse</h3>
-   </div>
-   </div>
-   </section>
 
    <section>
    <input type="text" placeholder="Topic" id="topic"/>
