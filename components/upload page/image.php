@@ -8,7 +8,51 @@
    </style>
    <meta charset="utf-8">
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-   <script>     
+   <script>
+   <?php
+      $host="127.0.0.1";
+      $port=3306;
+      $socket="";
+      $user="c2375a05";
+      $password="!c2375aU!";
+      $dbname="c2375a05test";
+
+      $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
+        or die ('Could not connect to the database server' . mysqli_connect_error());
+   
+      $username=$_COOKIE["username"];
+   
+      $categories = array();
+      $choices = array();
+
+      // sql query to build menu
+      $query = "select id, category, choice from my_options where lower(username) = lower('".$username."')";
+
+      if ($stmt = $con->prepare($query)) {
+          $stmt->execute();
+          $stmt->bind_result($id, $category, $choice);
+          while ($stmt->fetch()) {
+            
+            $categories[$id]=$category;
+            
+            if(!isset($choices[$id])) {
+              
+              $choices[$id] = array();
+              
+            }
+
+            if($choice)
+              array_push($choices[$id], $choice);
+            
+          }
+          $stmt->close();
+      }
+      
+      echo "var my_categories = JSON.parse('" . json_encode($categories) . "');";
+      echo "var my_choices = JSON.parse('" . json_encode($choices) . "');";
+     
+   
+   ?>
    </script>
 </head>
 <body>
@@ -56,11 +100,7 @@
    <div class="notification"></div>
    <footer></footer>
    <script>
-   
-      var my_categories = ["animals", "season"];
-      var my_choices = [["dog","cat","penguin"], ["summer","fall","winter","spring"]];
 
-      
       var category = document.getElementById("category");
       
       var choices = document.getElementById("choices");
