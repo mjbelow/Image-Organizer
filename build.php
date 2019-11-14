@@ -9,7 +9,7 @@ $dbname="c2375a05test";
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
-$username=$_POST["username"];
+$username=$_COOKIE["username"];
 $user_password='pass';
 //////////////////////////////////////////////////////////////////////////////
 if($_POST["modify"])

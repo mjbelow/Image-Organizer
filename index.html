@@ -36,30 +36,11 @@ Set.prototype.difference = function(otherSet)
     return differenceSet; 
 }
 
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 var index;
 var my_categories;
 var my_choices;
 
-$.post('build.php',
-  {
-    username: getCookie("username")
-  },
+$.post('build.php', {},
   function(data)
   {
     
@@ -67,7 +48,8 @@ $.post('build.php',
     index = data[0];
     my_categories = data[1];
     my_choices = data[2];
-
+    debug = data[3];
+    
     //document.getElementById('options').removeChild(document.getElementById('options_menu'));
     build_menu();
     add_choice_functionality();
@@ -118,7 +100,6 @@ function submit_options(e)
 
   $.post("build.php",
     {
-      username: getCookie("username"),
       modify: true,
       option: option.value,
       action: action.value,
@@ -705,7 +686,7 @@ function submit_options(e)
               or_op = operator[0].checked;
               and_op = operator[1].checked;
               var category_count = category.length;
-              console.log(category[0]);
+              //console.log(category[0]);
               for(var j = 0; j < category_count; j++)
               {
                 category[j].parentElement.getElementsByClassName("choice")[0].onchange();

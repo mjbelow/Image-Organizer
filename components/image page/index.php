@@ -17,13 +17,13 @@ $port=3306;
 $socket="";
 $user="c2375a05";
 $password="!c2375aU!";
-$dbname="c2375a05proj";
+$dbname="c2375a05test";
 
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
 
-
+$username=$_COOKIE["username"];
 
 // array to maintain order of categories (not necessary)
 $categories = array();
@@ -38,13 +38,13 @@ $images = array();
 //$query = "select category.name category, image.name image from c2375a05proj.image   inner join c2375a05proj.category     on image.category_id = category.id where   (category_id = 1 and choices in (1,2,3))   or   (category_id = 2 and choices in (32,128,64,512)) order by image.category_id, image.choices";
 $query = "select category.name category, image.name image " .
 "from " .
-  "(select name, category_id, sum(pow(2, choice_id-1)) choices " .
+  "(select name, category_id, sum(pow(2, choice_id-1)) choices, username " .
     "from image " .
-    "group by category_id, name " .
-    "order by category_id, choices, name) image " .
+    "group by username, category_id, name " .
+    "order by username, category_id, choices, name) image " .
   "inner join category " .
-    "on image.category_id = category.id " .
-"where ";
+    "on image.category_id = category.id AND image.username = category.username " .
+"where lower(image.username)=lower('".$username."') and ";
 
 $output = $_GET['output'];
 $category_count = count($output);
