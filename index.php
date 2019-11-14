@@ -41,7 +41,7 @@ $port=3306;
 $socket="";
 $user="c2375a05";
 $password="!c2375aU!";
-$dbname="c2375a05proj";
+$dbname="c2375a05test";
 
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
@@ -50,7 +50,7 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 //$index = array();
 
 // sql query to build index
-$query = "select category, choice, count from my_index";
+$query = "select category, choice, count from my_index where username='mjbelow'";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
@@ -65,7 +65,7 @@ if ($stmt = $con->prepare($query)) {
 
 
 // sql query to build menu
-$query = "select category, choice from my_options";
+$query = "select category, choice from my_options where username='mjbelow'";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
