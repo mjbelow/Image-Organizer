@@ -50,6 +50,30 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
       Number of Choices Selected: 
       <?php $choices = $_POST["choice"];
          echo count($choices); ?>
+
+     <br> Choices Selected: <br>
+      <?php 
+      
+      
+      $name = $_POST["choice"];
+   
+      foreach ($name as $choice){ 
+         echo $choice."<br />";  
+   } 
+   
+
+      //header("content-type:image/jpeg");
+      echo $_POST["fileToUpload"];
+   
+   
+   
+   
+   ?>
+
+
+
+
+
       
 </p>
    
