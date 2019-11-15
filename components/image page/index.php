@@ -44,7 +44,7 @@ $query = "select category.name category, image.name image " .
     "order by username, category_id, choices, name) image " .
   "inner join category " .
     "on image.category_id = category.id AND image.username = category.username " .
-"where lower(image.username)=lower('".$username."') and ";
+"where lower(image.username)=lower('".$username."') and (";
 
 $output = $_GET['output'];
 $category_count = count($output);
@@ -67,7 +67,7 @@ for($i = 0; $i < $category_count; $i++)
   }
 
   if($i == ($category_count - 1))
-    $query .= ")) " .
+    $query .= ")) ) " .
     "order by category_id, choices, image.name";
   else
     $query .= ")) or ";
