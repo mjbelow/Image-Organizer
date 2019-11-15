@@ -27,7 +27,10 @@
     return join("", $arr);
   }
 
-
+  $username=$_COOKIE["username"];
+  $category = $_POST["category"];
+  $choice = $_POST["choice"];
+  $choice_count = count($choice);
 
   /*
 
@@ -35,17 +38,17 @@
   Tools > Utilities > Copy as PHP Code (Connect to Server)
 
   */
-  /*
+
   $host="127.0.0.1";
   $port=3306;
   $socket="";
   $user="c2375a05";
-  $password="c2375aU!";
+  $password="!c2375aU!";
   $dbname="c2375a05test";
 
   $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
      or die ('Could not connect to the database server' . mysqli_connect_error());
-     */
+
 
   $file = $_FILES["fileToUpload"]["tmp_name"];
   $mime = mime_content_type($file);
@@ -68,7 +71,7 @@
 
   if($valid)
   {
-    
+
     $dir = "../../images/";
     $file_name = generate(10);
     $src = $dir . $file_name . $file_ext;
@@ -90,7 +93,27 @@
 
     if($valid)
     {
-      if(!move_uploaded_file($file, $src))
+      if(move_uploaded_file($file, $src))
+      {
+        $query = "select '" . $file_name . $file_ext . "', category.id, choice.id, category.username " .
+        "from category left join choice on ((category.id = choice.category_id) and (category.username = choice.username)) " .
+        "where (lower(category.username) = lower('".$username."')) and (lower(category.name) = lower('".$category."')) and (";
+
+        // build query using choices
+        for($i = 0; $i < $choice_count; $i++)
+        {
+          if($i == ($choice_count - 1))
+            $query .= "lower(choice.name) = lower('".$choice[$i]."')) and (";
+          else
+            $query .= "lower(choice.name) = lower('".$choice[$i]."') or ";
+        }
+
+        $query .= "true)";
+
+        $con->prepare("insert into image (".$query.")")->execute();
+
+      }
+      else
       {
         $valid = false;
         $msg = "There was a problem uploading your file.";
@@ -126,18 +149,17 @@
   ?>
 
     <br>
-    Category: <?php echo $_POST["category"] . "\n"; ?>
+    Category: <?php echo $category . "\n"; ?>
     <br>
 
     <?php
-      $choice = $_POST["choice"];
-      echo "Choices (" . count($choice) . "): \n    <ul class='choices'>\n";
+      echo "Choices (" . $choice_count . "): \n    <ul class='choices'>\n";
 
       foreach($choice as $name)
       {
         echo "      <li>" . $name . "</li>\n";
       }
-      
+
       echo "    </ul>";
     ?>
 
