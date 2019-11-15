@@ -1,6 +1,3 @@
-<!-- ----------------------------------------------------------------------- -->
-<!-- Image Upload Page-->
-
 <!DOCTYPE html>
 <head>
    <style>
@@ -19,9 +16,9 @@
 
       $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
         or die ('Could not connect to the database server' . mysqli_connect_error());
-   
+
       $username=$_COOKIE["username"];
-   
+
       $categories = array();
       $choices = array();
 
@@ -32,31 +29,31 @@
           $stmt->execute();
           $stmt->bind_result($id, $category, $choice);
           while ($stmt->fetch()) {
-            
+
             $categories[$id]=$category;
-            
+
             if(!isset($choices[$id])) {
-              
+
               $choices[$id] = array();
-              
+
             }
 
             if($choice)
               array_push($choices[$id], $choice);
-            
+
           }
           $stmt->close();
       }
-      
+
       echo "var my_categories = JSON.parse('" . json_encode($categories) . "');";
       echo "var my_choices = JSON.parse('" . json_encode($choices) . "');";
-     
-   
+
+
    ?>
    </script>
 </head>
 <body>
-   <form action="uploadcss.php" method="post">
+   <form action="uploadcss.php" method="post" enctype="multipart/form-data">
       <div class="wrapper">
          <header>
             <h1>Upload Images</h1>
@@ -69,18 +66,18 @@
                </select>
                <div id="choice" class="dropdown" name="choice">
                   <div class="dropbtn">Choices</div>
-                  <div class="dropdown-content" id="choices" name="choices">
-   <!-- <form method="get">
-   </form> -->
-   </div>
-   </div>
+                  <div class="dropdown-content" id="choices" name="choices"></div>
+                </div>
+                
    <div class="image-upload-wrap">
-   <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" id="fileToUpload" name="fileToUpload"/>
+     <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/png,image/gif,image/jpeg,image/webp" id="fileToUpload" name="fileToUpload"/>
+
+     <div class="drag-text">
+      <img id="preview" alt="DRAG AND DROP OR CLICK TO BROWSE">
+     </div>
+     
+   </div>
    
-   <div class="drag-text">
-   <h3 id = "test1">Drag and Drop or Click to Browse</h3>
-   </div>
-   </div>
    </section>
 
    <section>
@@ -90,11 +87,10 @@
    </div>
    <footer>
    <ul>
-        <!--  <img id="blah" src="#" alt="your image" /> -->
    <input class="button buttonReset" type="reset" value="Reset">
    <input class="button buttonReset" type="submit" value="Submit">
    </ul>
-   </footer> 
+   </footer>
    </div>
    </form>
    <div class="notification"></div>
@@ -102,12 +98,12 @@
    <script>
 
       var category = document.getElementById("category");
-      
+
       var choices = document.getElementById("choices");
-      
+
       var select = document.getElementById("category");
-      
-      
+
+
       for(var i = 0; i < my_categories.length; i++) {
           var opt = my_categories[i];
           var el = document.createElement("option");
@@ -115,43 +111,40 @@
           el.value = opt;
           select.appendChild(el);
       }
-      
+
       function change_choices(value)
       {
-      
+
       var myDiv = document.getElementById("choices");
-      
+
       myDiv.innerHTML = "";
-      
+
       for(var i = 0; i < my_choices[category.selectedIndex].length; i++) {
           var checkBox = document.createElement("input");
           var a = document.createElement("a");
-          a.setAttribute("name","choice[]");
           checkBox.type = "checkbox";
           checkBox.value = my_choices[category.selectedIndex][i];
-          checkBox.setAttribute("name", "choice[]");
           checkBox.name = "choice[]";
           a.appendChild(checkBox);
-         // a.setAttribute("name", "choice[]");
           myDiv.appendChild(a);
-          a.appendChild(document.createTextNode(my_choices[category.selectedIndex][i]));  
-      	}     
+          a.appendChild(document.createTextNode(my_choices[category.selectedIndex][i]));
+      	}
       }
-      
+
       category.onchange();
 
       function readURL(input) {
   if (input.files && input.files[0]) {
     var reader = new FileReader();
-    
+
     reader.onload = function(e) {
-      $('#blah').attr('src', e.target.result);
+      $('#preview').attr('src', e.target.result);
     }
-    
+
     reader.readAsDataURL(input.files[0]);
     document.getElementById("test1").innerHTML = document.getElementById("fileToUpload").value.split(/(\\|\/)/g).pop();
 
-   
+
   }
 }
 

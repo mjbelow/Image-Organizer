@@ -17,7 +17,7 @@ body {
 header {
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
 }
 h1 {
@@ -435,4 +435,27 @@ footer a {
   height: 300;
   border-radius: 8px;
 
+}
+
+.drag-text {
+  padding: 40px 10px;
+  text-align: center;
+}
+
+.drag-text img {
+  max-width: 280px;
+  max-height: 280px;
+  color: #7A7B7F;
+  font: 22px 'Times New Roman';
+}
+
+.choices {
+  margin: 0;
+  padding: 5px 0;
+  list-style-position: inside;
+}
+
+.preview {
+  text-align: center;
+  margin: 20px 0;
 }
