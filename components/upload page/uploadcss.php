@@ -31,93 +31,106 @@
   $category = $_POST["category"];
   $choice = $_POST["choice"];
   $choice_count = count($choice);
-
-  /*
-
-  following PHP code generated using MySQL Workbench (IMPORTANT: $password has to be set or else it won't be able to connect to database):
-  Tools > Utilities > Copy as PHP Code (Connect to Server)
-
-  */
-
-  $host="127.0.0.1";
-  $port=3306;
-  $socket="";
-  $user="c2375a05";
-  $password="!c2375aU!";
-  $dbname="c2375a05test";
-
-  $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
-     or die ('Could not connect to the database server' . mysqli_connect_error());
-
-
-  $file = $_FILES["fileToUpload"]["tmp_name"];
-  $mime = mime_content_type($file);
   $valid = true;
 
-
-  if($mime == "image/jpeg")
-    $file_ext = ".jpg";
-  elseif($mime == "image/png")
-    $file_ext = ".png";
-  elseif($mime == "image/gif")
-    $file_ext = ".gif";
-  elseif($mime == "image/webp")
-    $file_ext = ".webp";
-  else
+  if(!$category)
   {
     $valid = false;
-    $msg = "Invalid image file: must be a jpeg, png, gif, or webp file";
+    $msg = "Please assign a category to the image";
   }
-
-  if($valid)
+  elseif($choice_count == 0)
   {
+    $valid = false;
+    $msg = "Please assign choice(s) to the image";
+  }
+  else
+  {
+    $host="127.0.0.1";
+    $port=3306;
+    $socket="";
+    $user="c2375a05";
+    $password="!c2375aU!";
+    $dbname="c2375a05test";
 
-    $dir = "../../images/";
-    $file_name = generate(10);
-    $src = $dir . $file_name . $file_ext;
-
-
-    // generate new name if file already exists
-    while(file_exists($src))
-    {
-      $file_name = generate(10);
-      $src = $dir . $file_name . $file_ext;
-    }
-
-    // prevent files larger than 3MB from being uploaded
-    if($_FILES["fileToUpload"]["size"] > (1024*1024*3))
+    $con = new mysqli($host, $user, $password, $dbname, $port, $socket);
+    
+    if($con->connect_error)
     {
       $valid = false;
-      $msg = "Image size is too large to upload (3MB limit)";
+      $msg = "Sorry, could not connect to the database";
+    }
+    else
+    {
+      $file = $_FILES["fileToUpload"]["tmp_name"];
+      $mime = mime_content_type($file);
+
+
+      if($mime == "image/jpeg")
+        $file_ext = ".jpg";
+      elseif($mime == "image/png")
+        $file_ext = ".png";
+      elseif($mime == "image/gif")
+        $file_ext = ".gif";
+      elseif($mime == "image/webp")
+        $file_ext = ".webp";
+      else
+      {
+        $valid = false;
+        $msg = "Invalid image file: must be a jpeg, png, gif, or webp file";
+      }
     }
 
     if($valid)
     {
-      if(move_uploaded_file($file, $src))
+
+      $dir = "../../images/";
+      $file_name = generate(10);
+      $src = $dir . $file_name . $file_ext;
+
+
+      // generate new name if file already exists
+      while(file_exists($src))
       {
-        $query = "select '" . $file_name . $file_ext . "', category.id, choice.id, category.username " .
-        "from category left join choice on ((category.id = choice.category_id) and (category.username = choice.username)) " .
-        "where (lower(category.username) = lower('".$username."')) and (lower(category.name) = lower('".$category."')) and (";
-
-        // build query using choices
-        for($i = 0; $i < $choice_count; $i++)
-        {
-          if($i == ($choice_count - 1))
-            $query .= "lower(choice.name) = lower('".$choice[$i]."')) and (";
-          else
-            $query .= "lower(choice.name) = lower('".$choice[$i]."') or ";
-        }
-
-        $query .= "true)";
-
-        $con->prepare("insert into image (".$query.")")->execute();
-
+        $file_name = generate(10);
+        $src = $dir . $file_name . $file_ext;
       }
-      else
+
+      // prevent files larger than 3MB from being uploaded
+      if($_FILES["fileToUpload"]["size"] > (1024*1024*3))
       {
         $valid = false;
-        $msg = "There was a problem uploading your file.";
+        $msg = "Image size is too large to upload (3MB limit)";
       }
+
+      if($valid)
+      {
+        if(move_uploaded_file($file, $src))
+        {
+          $query = "select '" . $file_name . $file_ext . "', category.id, choice.id, category.username " .
+          "from category left join choice on ((category.id = choice.category_id) and (category.username = choice.username)) " .
+          "where (lower(category.username) = lower('".$username."')) and (lower(category.name) = lower('".$category."')) and (";
+
+          // build query using choices
+          for($i = 0; $i < $choice_count; $i++)
+          {
+            if($i == ($choice_count - 1))
+              $query .= "lower(choice.name) = lower('".$choice[$i]."')) and (";
+            else
+              $query .= "lower(choice.name) = lower('".$choice[$i]."') or ";
+          }
+
+          $query .= "true)";
+
+          $con->prepare("insert into image (".$query.")")->execute();
+
+        }
+        else
+        {
+          $valid = false;
+          $msg = "There was a problem uploading your file.";
+        }
+      }
+
     }
 
   }
