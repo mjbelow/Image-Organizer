@@ -757,15 +757,18 @@ function submit_options(e)
       </form>
     </div>
   </section>
-  <iframe id="frame" name="content"></iframe>
+  
 
 
 </main>
 
 
 <script type="application/javascript">
-document.getElementById("frame").src="";
-
+// hacky solution to prevent POSTs from being resent in iframe if user refreshes page
+var frame = document.createElement("iframe");
+frame.id="frame";
+frame.name="content";
+document.getElementsByTagName("main")[0].appendChild(frame);
 
 var option;
 var action;
