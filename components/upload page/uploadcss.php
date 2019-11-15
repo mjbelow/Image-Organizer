@@ -95,11 +95,11 @@
         $src = $dir . $file_name . $file_ext;
       }
 
-      // prevent files larger than 3MB from being uploaded
-      if($_FILES["fileToUpload"]["size"] > (1024*1024*3))
+      // prevent files larger than 1MB from being uploaded
+      if($_FILES["fileToUpload"]["size"] > (1024*1024*1))
       {
         $valid = false;
-        $msg = "Image size is too large to upload (3MB limit)";
+        $msg = "Image size is too large to upload (1MB limit)";
       }
 
       if($valid)
@@ -122,6 +122,7 @@
           $query .= "true)";
 
           $con->prepare("insert into image (".$query.")")->execute();
+          $con->close();
 
         }
         else
