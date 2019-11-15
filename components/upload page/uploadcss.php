@@ -4,7 +4,7 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-
+<script>
 <?php
   // function to generate file name: [0-9A-Za-z]{$n}
   function generate($n)
@@ -134,8 +134,13 @@
     }
 
   }
+  
+  if($valid)
+    echo "parent.start();"
 
 ?>
+
+</script>
 <div class="wrapper">
 
   <header>
@@ -161,12 +166,16 @@
     }
   ?>
 
-    <br>
-    Category: <?php echo $category . "\n"; ?>
-    <br>
+    <div class="title">Category</div>
+    <ul class="options">
+      <li>
+        <?php echo $category . "\n"; ?>
+      </li>
+    </ul>
 
+    <div class="title">Choices
     <?php
-      echo "Choices (" . $choice_count . "): \n    <ul class='choices'>\n";
+      echo " (" . $choice_count . ")</div>\n    <ul class='options'>\n";
 
       foreach($choice as $name)
       {
@@ -177,7 +186,7 @@
     ?>
 
 
-    Preview:
+    <div class="title">Preview</div>
     <div class="preview">
     <?php
       if($valid)

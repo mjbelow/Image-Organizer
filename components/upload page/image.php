@@ -142,7 +142,6 @@ function readURL(input)
     }
 
     reader.readAsDataURL(input.files[0]);
-    document.getElementById("test1").innerHTML = document.getElementById("fileToUpload").value.split(/(\\|\/)/g).pop();
 
   }
 }

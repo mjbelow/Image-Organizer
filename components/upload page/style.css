@@ -449,7 +449,7 @@ footer a {
   font: 22px 'Times New Roman';
 }
 
-.choices {
+.options {
   margin: 0;
   padding: 5px 0;
   list-style-position: inside;
@@ -458,4 +458,9 @@ footer a {
 .preview {
   text-align: center;
   margin: 20px 0;
+}
+
+.title {
+  display: inline-block;
+  border-bottom: 1px solid;
 }

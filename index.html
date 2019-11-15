@@ -42,30 +42,35 @@ var index;
 var my_categories;
 var my_choices;
 
-$.post('build.php', {},
-  function(data)
-  {
-    
-    data = JSON.parse(data);
-    index = data[0];
-    my_categories = data[1];
-    my_choices = data[2];
-    debug = data[3];
-    
-    //document.getElementById('options').removeChild(document.getElementById('options_menu'));
-    build_menu();
-    add_choice_functionality();
-    add_menu_fucntionality();
-    initiate();
-    assign_vars();
-    update_category_menu();
-    modify_options(true);
-    submit=true;
-    $("#selection").show();
+function start()
+{
+  $.post('build.php', {},
+    function(data)
+    {
+      
+      data = JSON.parse(data);
+      index = data[0];
+      my_categories = data[1];
+      my_choices = data[2];
+      debug = data[3];
+      
+      if(document.getElementById("options_menu"))
+        document.getElementById('options').removeChild(document.getElementById('options_menu'));
+      build_menu();
+      add_choice_functionality();
+      add_menu_fucntionality();
+      initiate();
+      assign_vars();
+      update_category_menu();
+      modify_options(true);
+      submit=true;
+      $("#selection").show();
 
-  }
-);
+    }
+  );
+}
 
+start();
 
 var submit=true;
 
