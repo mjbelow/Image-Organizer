@@ -50,7 +50,7 @@
     $socket="";
     $user="c2375a05";
     $password="!c2375aU!";
-    $dbname="c2375a05test";
+    $dbname="c2375a05proj";
 
     $con = new mysqli($host, $user, $password, $dbname, $port, $socket);
     
