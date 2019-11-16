@@ -51,7 +51,7 @@
 </script>
 </head>
 <body>
-<form action="uploadcss.php" method="post" enctype="multipart/form-data">
+<form action="uploadcss.php" method="post" enctype="multipart/form-data" onreset="document.getElementById('preview').removeAttribute('src');">
   <div class="wrapper">
     <header>
       <h1>Upload Image</h1>
