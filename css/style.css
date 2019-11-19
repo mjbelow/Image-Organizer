@@ -1,3 +1,28 @@
+.output {
+  width: 100%;
+  display: none;
+}
+
+html, body {
+  height: 100%;
+}
+
+#selection, #user_form, #log_out, #error_message, #upload {
+  display: none;
+}
+
+#user_form label {
+  font-size: 11pt;
+}
+
+#error_message {
+  font-size: 11pt;
+  color: #fff;
+  background: #f00;
+  padding: 2px;
+  border-radius: 4px;
+}
+
 * {
   box-sizing: border-box;
 }

@@ -9,10 +9,92 @@ $dbname="c2375a05proj";
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
-$username=$_COOKIE["username"];
-$user_password='pass';
+$valid_user=false;
+
+// sign up
+if($_POST["method"] == 0)
+{
+  $username=$_POST["login_name"];
+  $query = "select count(0) from user where lower(name)=lower('".$username."')";
+
+
+  if($stmt = $con->prepare($query))
+  {
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+    if($count == 0)
+    {
+      $con->prepare("insert into user values('".$username."','".hash("sha256", $_POST["login_pass"])."')")->execute();
+      setcookie("username", $username, time() + (86400 * 30), "/");
+      setcookie("password", hash("sha256", $_POST["login_pass"]), time() + (86400 * 30), "/");
+      $valid_user=true;
+    }
+  }
+}
+// log in (manually: when user submits login form)
+elseif($_POST["method"] == 1)
+{
+  $username=$_POST["login_name"];
+  $query = "select count(0) from user where lower(name)=lower('".$username."') and pass='".hash("sha256", $_POST["login_pass"])."'";
+
+
+  if ($stmt = $con->prepare($query))
+  {
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+    if($count == 1)
+    {
+      setcookie("username", $username, time() + (86400 * 30), "/");
+      setcookie("password", hash("sha256", $_POST["login_pass"]), time() + (86400 * 30), "/");
+      $valid_user=true;
+    }
+  }
+}
+// log in (automatically: when page loads)
+// or
+// when user modifies options for their account (still have to verify or else they could just change their cookies to a different username and do whatever they want to other accounts)
+else
+{
+  if(isset($_COOKIE["username"]) && isset($_COOKIE["password"]))
+  {
+    $username=$_COOKIE["username"];
+    $query = "select count(0) from user where lower(name)=lower('".$username."') and pass='".$_COOKIE["password"]."'";
+
+
+    if ($stmt = $con->prepare($query))
+    {
+      $stmt->execute();
+      $stmt->bind_result($count);
+      $stmt->fetch();
+      $stmt->close();
+      if($count == 1)
+      {
+        $valid_user=true;
+      }
+    }
+  }
+}
+
+
+$index=array();
+$categories = array();
+$choices = array();
 $debug="";
-//////////////////////////////////////////////////////////////////////////////
+
+// if login credentials are wrong, or if the user was trying to sign up, don't build arrays for the user)
+if(!$valid_user || $_POST["method"] == 0)
+{
+  echo json_encode(array($index, $categories, $choices, $debug, $valid_user));
+  $con->close();
+  exit();
+}
+
+
+// if user is modifying categories and choices
 if(isset($_POST["modify"]))
 {
   if($_POST["action"]=="create")
@@ -190,7 +272,6 @@ if(isset($_POST["modify"]))
 // sql query to build index
 $query = "select category, choice, count from my_index where lower(username) = lower('".$username."')";
 
-$index=array();
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
@@ -205,8 +286,6 @@ if ($stmt = $con->prepare($query)) {
     $stmt->close();
 }
 
-$categories = array();
-$choices = array();
 
 // sql query to build menu
 $query = "select id, category, choice from my_options where lower(username) = lower('".$username."')";
@@ -231,7 +310,7 @@ if ($stmt = $con->prepare($query)) {
     $stmt->close();
 }
 
-echo json_encode(array($index, $categories, $choices, $debug));
+echo json_encode(array($index, $categories, $choices, $debug, $valid_user));
 
 $con->close();
 ?>

@@ -137,7 +137,7 @@
   }
   
   if($valid)
-    echo "parent.start();"
+    echo "parent.start(4, null, null);"
 
 ?>
 

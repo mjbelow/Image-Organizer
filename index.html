@@ -3,79 +3,102 @@
 <head>
 <title>Main Page</title>
 <meta charset="UTF-8">
-<style type="text/css">
-.output, #selection {
-  width: 100%;
-  display: none;
-}
-
-html, body {
-  height: 100%;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="css/style.css">
 <script type="application/javascript" src="js/jquery.min.js"></script>
 <script type="application/javascript">
-var user_login_name = prompt("users to login as\n(mjbelow, user, user2 - user8)\n\n'mjbelow'\n - categories\n - choices\n - images\n'user'\n - categories\n - choices\n'user2' - 'user8'\n - [none]", "user");
-document.cookie="username="+user_login_name;
 // source: https://www.geeksforgeeks.org/sets-in-javascript/
-// Performs difference operation between 
-// called set and otherSet 
-Set.prototype.difference = function(otherSet) 
-{ 
-    // creating new set to store difference 
-     var differenceSet = new Set(); 
-  
-    // iterate over the values 
-    for(var elem of this) 
-    { 
-        // if the value[i] is not present  
-        // in otherSet add to the differenceSet 
-        if(!otherSet.has(elem)) 
-            differenceSet.add(elem); 
-    } 
-  
-    // returns values of differenceSet 
-    return differenceSet; 
+// Performs difference operation between
+// called set and otherSet
+Set.prototype.difference = function(otherSet)
+{
+    // creating new set to store difference
+     var differenceSet = new Set();
+
+    // iterate over the values
+    for(var elem of this)
+    {
+        // if the value[i] is not present
+        // in otherSet add to the differenceSet
+        if(!otherSet.has(elem))
+            differenceSet.add(elem);
+    }
+
+    // returns values of differenceSet
+    return differenceSet;
+}
+
+// source: https://www.w3schools.com/js/js_cookies.asp
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
 }
 
 var index;
 var my_categories;
 var my_choices;
 
-function start()
+function start(method, login_name, login_pass)
 {
-  $.post('build.php', {},
+
+  $.post('build.php', {method: method, login_name: login_name, login_pass: login_pass},
     function(data)
     {
-      
+
       data = JSON.parse(data);
       index = data[0];
       my_categories = data[1];
       my_choices = data[2];
       debug = data[3];
-      
-      if(document.getElementById("options_menu"))
-        document.getElementById('options').removeChild(document.getElementById('options_menu'));
-      build_menu();
-      add_choice_functionality();
-      add_menu_fucntionality();
-      initiate();
-      assign_vars();
-      update_category_menu();
-      modify_options(true);
-      submit=true;
-      $("#selection").show();
+      var valid = data[4];
+
+      if(!valid)
+      {
+        if(method == 0)
+          $("#error_message").html("Username already exists").show();
+        else if(method == 1)
+          $("#error_message").html("Invalid credentials").show();
+        else
+          $("#user_form").css("display","inline-block");
+      }
+      else
+      {
+        if(document.getElementById("options_menu"))
+          document.getElementById('options').removeChild(document.getElementById('options_menu'));
+        build_menu();
+        add_choice_functionality();
+        add_menu_fucntionality();
+        initiate();
+        assign_vars();
+        update_category_menu();
+        modify_options(true);
+        submit=true;
+        $("#selection").show();
+        $("#upload").show();
+        $("#user_form").hide();
+        $("#username").html(getCookie("username").toLowerCase());
+        $("#log_out").show();
+      }
 
     }
   );
 }
 
-start();
+start(2,null,null);
 
 var submit=true;
 
 </script>
-<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <body>
@@ -85,12 +108,23 @@ var submit=true;
   <form action="components/upload page/image.php" target="content" method="get">
     <button id="upload">Upload</button>
   </form>
-  
-  <input id="login_name" autocomplete="off">
-  <input id="login_pass">
-  
-  username
-  <a href="#">Log out</a>
+
+  <div id="user_form">
+    <span id="error_message"></span>
+    <input id="login_name" autocomplete="off" placeholder="Username">
+    <input id="login_pass" placeholder="Password" type="password">
+    
+    <button id="log_in" onclick="start(1, document.getElementById('login_name').value, document.getElementById('login_pass').value)">Log In</button>
+    <button id="sign_up" onclick="start(0, document.getElementById('login_name').value, document.getElementById('login_pass').value)">Sign Up</button>
+    <input type="checkbox" id="remember"><label for="remember">Remember me</label>
+  </div>
+
+  <form id="log_out" onsubmit="document.cookie='username=; path=/; max-age=0';document.cookie='password=; path=/; max-age=0';">
+    <span id="username">username</span>
+    <!-- <a href="#">Log out</a> -->
+    <button>Log out</button>
+  </form>
+	
 
 </header>
 
@@ -99,7 +133,7 @@ var submit=true;
 function submit_options(e)
 {
   e.preventDefault();
-  
+
   // prevent form from being submitted until it has finished processing
   if(!submit)
     return;
@@ -108,6 +142,7 @@ function submit_options(e)
   $.post("build.php",
     {
       modify: true,
+      method: 3,
       option: option.value,
       action: action.value,
       category: category_mod.value,
@@ -119,13 +154,13 @@ function submit_options(e)
     },
     function(data)
     {
-      
+
       var user_data = JSON.parse(data);
       index=user_data[0];
       my_categories=user_data[1];
       my_choices=user_data[2];
       debug=user_data[3];
-      
+
       update_category_menu();
       modify_options(true);
       if(document.getElementById('options_menu'))
@@ -143,7 +178,7 @@ function submit_options(e)
 
 <main>
   <section id="menu">
-  
+
     <div id="selection">
       <!--<form id="modify" method="get" onsubmit="submit_options(event)" action="modify options.php" target="content" method="post">-->
       <!--<form id="modify" action="modify options.php" target="content" method="post">-->
@@ -188,18 +223,18 @@ function submit_options(e)
           <input id="name" name="name">
 
           <hr>
-          
+
           <div class="output">
             <input id="category_id" name="category_id">
             <input id="choice_id" name="choice_id">
           </div>
-          
+
           <input type="submit" value="Modify Options">
         </fieldset>
       </form>
-      
+
       <form action="components/image page/index.php" target="content" method="get" onreset="initiate()">
-        
+
         <div id="form_options">
           <input type="submit" value="Show Images">
           <input type="reset" value="Reset">
@@ -215,9 +250,9 @@ function submit_options(e)
             <input type="radio" name="in_operator" class="operator in">
             XOR
           </fieldset>
-          
+
           <br>
-          
+
           <fieldset>
             <legend>Exclude</legend>
             <input type="radio" name="ex_operator" class="operator ex" checked>
@@ -227,11 +262,11 @@ function submit_options(e)
             <input type="radio" name="ex_operator" class="operator ex">
             XOR
           </fieldset>
-          
+
         </div>
-        
+
         <div id="options"></div>
-      
+
         <script type="application/javascript">
         function build_menu()
         {
@@ -247,12 +282,12 @@ function submit_options(e)
           {
             // category item
             var category_item = document.createElement("li");
-            
+
             // category checkbox option
             var category_checkbox = document.createElement("input");
             category_checkbox.type="checkbox";
             category_checkbox.className="category";
-            
+
             // category output (used to handle form data)
             var category_output = document.createElement("input");
             category_output.className="output";
@@ -261,17 +296,17 @@ function submit_options(e)
 
             // category choice list
             var choice_list = document.createElement("ul");
-            
+
             //var choice = options[category[i]];
             var choice = my_choices[i];
             var choice_count = choice.length;
-            
-            
+
+
             for(var j = 0; j < choice_count; j++)
             {
               // choice item
               var choice_item = document.createElement("li");
-              
+
               // choice checkbox option (include)
               var choice_checkbox = document.createElement("input");
               choice_checkbox.type="checkbox";
@@ -281,35 +316,35 @@ function submit_options(e)
 
               // append (include) to choice item
               choice_item.appendChild(choice_checkbox);
-              
+
               // choice checkbox option (exclude);
               choice_checkbox = choice_checkbox.cloneNode(false);
               choice_checkbox.className="choice ex";
-              
+
               // append (exclude) to choice item
               choice_item.appendChild(choice_checkbox);
-              
+
               // add choice name
               choice_item.innerHTML += choice[j] + " <span></span>";
-              
+
               // append to choice list
               choice_list.appendChild(choice_item);
             }
-            
+
             // append to category item
             category_item.appendChild(category_output);
-            
-            
+
+
             category_item.appendChild(category_checkbox);
             category_checkbox = category_checkbox.cloneNode(false);
             category_item.appendChild(category_checkbox);
-            
+
             category_item.innerHTML += category[i] + " <span></span>";
             category_item.appendChild(choice_list);
-            
+
             // append to category list
             category_list.appendChild(category_item);
-            
+
             // append to document
             document.getElementById("options").appendChild(category_list);
           }
@@ -322,7 +357,7 @@ function submit_options(e)
         //  MENU LOGIC  //
         //              //
         //////////////////
-        
+
         var or_op = true;
         var and_op = false;
 
@@ -330,7 +365,7 @@ function submit_options(e)
         var ex_and_op = false;
 
         var choice;
-        
+
         function add_choice_functionality()
         {
           choice = document.getElementsByClassName("choice");
@@ -344,46 +379,46 @@ function submit_options(e)
 
               // include logic
               var group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[0];
-              var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice in");    
-              
+              var group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice in");
+
               // exclude logic
               var ex_group_category = this.parentElement.parentElement.parentElement.getElementsByClassName("category")[1];
               var ex_group_choice = this.parentElement.parentElement.parentElement.getElementsByClassName("choice ex");
-              
+
               var group_output = this.parentElement.parentElement.parentElement.getElementsByClassName("output")[0];
               var group_count = group_choice.length;
               var group = this.dataset.group;
-              
+
               // include logic
               var image_keys = new Set();
               var image_keys_not = new Set();
               var selection = new Set();
-              
+
               // exclude logic
               var ex_image_keys = new Set();
               var ex_selection = new Set();
-              
+
               var group_selected = 0;
 
               // include logic
               var active = 0n;
-              
+
               // exclude logic
               var ex_active = 0n;
 
               var max = 0n;
-              
+
               for(var j = 0; j < group_count; j++)
               {
-              
+
                 // include logic
                 if(group_choice[j].checked)
                   active |= BigInt(group_choice[j].dataset.bin);
-                
+
                 //exclude logic
                 if(ex_group_choice[j].checked)
                   ex_active |= BigInt(ex_group_choice[j].dataset.bin);
-                
+
                 max |= BigInt(group_choice[j].dataset.bin);
               }
 
@@ -397,7 +432,7 @@ function submit_options(e)
                 group_category.indeterminate=true;
               else
                 group_category.indeterminate=false;
-              
+
               // exclude logic
               if(ex_active == max)
                 ex_group_category.checked=true;
@@ -417,7 +452,7 @@ function submit_options(e)
               //  UPDATE MENU INDEX VALUES  //
               //                            //
               ////////////////////////////////
-              
+
               var group_keys = Object.keys(index[group]);
               var group_keys_count = group_keys.length;
 
@@ -429,44 +464,44 @@ function submit_options(e)
                 group_total += index[group][group_keys[j]];
 
               }
-              
+
               // update value for all choices
               for(var j = 0; j < group_count; j++)
               {
                 // include logic
                 var selected = 0;
-                
+
                 // exclude logic
                 var ex_selected = 0;
-                
+
                 var total = 0;
                 var bin = BigInt(group_choice[j].dataset.bin);
-                
+
                 // include logic
                 var n;
                 if(or_op | and_op)
                   n = active | bin;
                 else
                   n = active & ~bin;
-                
+
                 // exclude logic
                 var ex_n;
                 if(ex_or_op | ex_and_op)
                   ex_n = ex_active | bin;
                 else
                   ex_n = ex_active & ~bin;
-                
+
                 // include logic
                 var choice_checked = group_choice[j].checked;
-                
+
                 // exclude logic
                 var ex_choice_checked = ex_group_choice[j].checked;
-                
+
                 for(var k = 0; k < group_keys_count; k++)
                 {
-                  
+
                   group_keys[k] = BigInt(group_keys[k]);
-                  
+
                   // include logic
                   var bool;
                   if(and_op)
@@ -475,7 +510,7 @@ function submit_options(e)
                     bool = ((bin & group_keys[k]) == bin);
                   else
                     bool = (((n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
-                  
+
                   // exclude logic
                   var ex_bool;
                   if(ex_and_op)
@@ -484,10 +519,10 @@ function submit_options(e)
                     ex_bool = ((bin & group_keys[k]) == bin);
                   else
                     ex_bool = (((ex_n & group_keys[k]) == 0) && ((bin & group_keys[k]) == bin));
-                  
+
                   if((bin & group_keys[k]) == bin)
                     total += index[group][group_keys[k]+" "];
-                  
+
                   // include logic
                   if(bool)
                   {
@@ -503,7 +538,7 @@ function submit_options(e)
                     }
                     selected += index[group][group_keys[k]];
                   }
-                  
+
                   // exclude logic
                   if(ex_bool)
                   {
@@ -515,9 +550,9 @@ function submit_options(e)
                     ex_selected += index[group][group_keys[k]];
                     //selected -= index[group][group_keys[k]];
                   }
-                
+
                 }
-                
+
                 var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
                 //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
 
@@ -528,70 +563,70 @@ function submit_options(e)
                 info.innerHTML = selected + " / " + total;
                 group_choice[j].dataset.total = total;
               }
-              
+
               image_keys = image_keys.difference(ex_image_keys);
               image_keys_not = image_keys_not.difference(ex_image_keys);
-              
+
               var image_keys_values = image_keys.values();
               var image_keys_count = image_keys.size;
               var image_keys_not_count = image_keys_not.size;
 
               var group_info = group_category.parentElement.getElementsByTagName("span")[0];
               var group_selected = 0;
-              
+
               for(var j = 0; j < image_keys_count; j++)
               {
                 var key = image_keys_values.next().value;
-                
-                
+
+
                 group_selected += index[group][group_keys[key]+" "];
-              
+
               }
-              
-              
+
+
               for(var j = 0; j < group_count; j++)
               {
-                
+
                 var image_keys_values = image_keys.values();
                 var image_keys_not_values = image_keys_not.values();
                 var bin = BigInt(group_choice[j].dataset.bin);
                 var selected = 0;
                 var choice_checked = group_choice[j].checked;
-                
+
                 if(choice_checked)
                 {
                   for(var k = 0; k < image_keys_count; k++)
                   {
-                    
+
                     var key = image_keys_values.next().value;
-                    
-                    
+
+
                     if(((bin & group_keys[key]) == bin))
                     {
                       selected += index[group][group_keys[key]+" "];
                     }
-                    
 
-                    
+
+
                   }
                 }
                 else
                 {
                   for(var k = 0; k < image_keys_not_count; k++)
                   {
-                    
+
                     var key = image_keys_not_values.next().value;
-                    
+
                     if(((bin & group_keys[key]) == bin))
                     {
                       selected += index[group][group_keys[key]+" "];
                     }
-                    
-                    
+
+
                   }
                 }
-                
-                
+
+
                 var info = group_choice[j].parentElement.getElementsByTagName("span")[0];
                 //info.innerHTML = selected + " / " + total + ") (" + ex_selected + " / " + total;
 
@@ -600,18 +635,18 @@ function submit_options(e)
                 //selected = selected < 0 ? 0 : selected;
 
                 info.innerHTML = selected + " / " + group_choice[j].dataset.total;
-                
+
               }
-              
+
 
               group_info.innerHTML = group_selected + " / " + group_total;
 
               // disable output for a category if no choices are selected
-              
+
               selection = selection.difference(ex_selection);
-              
+
               var output = Array.from(selection);
-              
+
               if(output.length == 0)
               {
                 group_output.disabled=true;
@@ -627,9 +662,9 @@ function submit_options(e)
 
           }
         }
-        
+
         //add_choice_functionality();
-        
+
         function toggle_all(checked, choice)
         {
 
@@ -714,46 +749,46 @@ function submit_options(e)
             {
               ex_or_op = ex_operator[0].checked;
               ex_and_op = ex_operator[1].checked;
-              
+
               var category_count = category.length;
               for(var j = 0; j < category_count; j++)
               {
                 category[j].parentElement.getElementsByClassName("choice")[0].onchange();
               }
-              
+
             }
 
           }
-          
+
         }
-        
+
         //add_menu_fucntionality();
-        
+
         // initiate menu function (also used on form reset)
         function initiate()
         {
-          
+
           var category = document.getElementsByClassName("category");
           var count = category.length;
-          
+
           for(var i = 0; i < count; i++)
           {
             category[i].checked=false;
             category[i].indeterminate=false;
             category[i].onchange();
           }
-          
+
           or_op = true;
           ex_or_op = true;
-          
+
           and_op = false;
           ex_and_op = false;
-          
+
           operator[0].checked = true;
           ex_operator[0].checked = true;
-          
+
         }
-        
+
         // initiate menu
         //initiate();
 
@@ -762,7 +797,7 @@ function submit_options(e)
       </form>
     </div>
   </section>
-  
+
 
 
 </main>
@@ -814,29 +849,29 @@ function update_category_menu()
   categories_count = categories.length;
 
   category_mod.innerHTML="";
-  
+
   for(var i = 0; i < categories_count; i++)
-  {  
+  {
     category_mod.innerHTML+="<option>" + categories[i] + "</option>";
   }
 }
 
 function modify_options(update)
 {
-  
+
   //var choices_count = options[category_mod.value].length;
   var choices_count = my_choices[category_mod.selectedIndex] ? my_choices[category_mod.selectedIndex].length : 0;
-  
+
   var i;
-  
+
   if(update)
     choice_mod.innerHTML="";
-  
+
   position.innerHTML="";
-  
+
   position.disabled=false;
   option_name.disabled=false;
-  
+
   if(option.selectedIndex==0)
   {
 
@@ -879,7 +914,7 @@ function modify_options(update)
   }
   else
   {
-    
+
     if(option.selectedIndex==0)
     {
       option_name.value=category_mod.value;
@@ -891,10 +926,10 @@ function modify_options(update)
       position.selectedIndex=choice_mod.selectedIndex;
     }
   }
-  
+
   category_id.value=category_mod.selectedIndex+1;
   choice_id.value=choice_mod.selectedIndex+1;
-  
+
 }
 
 //update_category_menu();
