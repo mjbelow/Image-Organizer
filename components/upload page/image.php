@@ -116,14 +116,16 @@ function update_choices()
 
   for(var i = 0; i < choice_count; i++)
   {
+    var label = document.createElement("label");
+    label.setAttribute("for", i);
     var checkBox = document.createElement("input");
-    var a = document.createElement("a");
     checkBox.type = "checkbox";
     checkBox.value = my_choices[category.selectedIndex][i];
     checkBox.name = "choice[]";
-    a.appendChild(checkBox);
-    choices.appendChild(a);
-    a.appendChild(document.createTextNode(my_choices[category.selectedIndex][i]));
+    checkBox.id=i;
+    label.appendChild(checkBox);
+    label.appendChild(document.createTextNode(my_choices[category.selectedIndex][i]));
+    choices.appendChild(label);
   }
 
 }
