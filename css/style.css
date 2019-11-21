@@ -76,7 +76,7 @@ hr {
 }
 
 .img_container {
-  vertical-align: middle;
+  vertical-align: top;
   background: rgba(255, 255, 255, 0.1);
   /*background: transparent;*/
   color: #eee;
@@ -311,4 +311,8 @@ input[type="reset"]:hover {
 
 :disabled {
   opacity: 0.3;
+}
+
+body > div:last-child {
+  margin-bottom: 500px;
 }
