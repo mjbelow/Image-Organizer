@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <script>
 <?php
+  session_start();
 
   $host="127.0.0.1";
   $port=3306;
@@ -15,7 +16,7 @@
   $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
     or die ('Could not connect to the database server' . mysqli_connect_error());
 
-  $username=$_COOKIE["username"];
+  $username=$_SESSION["username"];
 
   $categories = array();
   $choices = array();

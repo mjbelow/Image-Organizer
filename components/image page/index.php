@@ -68,6 +68,8 @@ body {
 <script type="application/javascript" src="js/jquery.min.js"></script>
 <script type="application/javascript">
 <?php
+session_start();
+
 $host="127.0.0.1";
 $port=3306;
 $socket="";
@@ -79,7 +81,7 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
 
-$username=$_COOKIE["username"];
+$username=$_SESSION["username"];
 
 // array to maintain order of categories (not necessary)
 $categories = array();

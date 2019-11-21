@@ -27,31 +27,18 @@ Set.prototype.difference = function(otherSet)
     return differenceSet;
 }
 
-// source: https://www.w3schools.com/js/js_cookies.asp
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 var index;
 var my_categories;
 var my_choices;
 
 function start(method, login_name, login_pass)
 {
+  var remember = 0;
+  // if user is logging in or signing up, check if remember me is checked
+  if(method < 2)
+    remember = $("#remember")[0].checked ? 1 : 0;
 
-  $.post('build.php', {method: method, login_name: login_name, login_pass: login_pass},
+  $.post('build.php', {method: method, login_name: login_name, login_pass: login_pass, remember: remember},
     function(data)
     {
 
@@ -61,6 +48,7 @@ function start(method, login_name, login_pass)
       my_choices = data[2];
       debug = data[3];
       var valid = data[4];
+      var username = data[5];
 
       if(!valid)
       {
@@ -86,7 +74,7 @@ function start(method, login_name, login_pass)
         $("#selection").show();
         $("#upload").show();
         $("#user_form").hide();
-        $("#username").html(getCookie("username").toLowerCase());
+        $("#username").html(username.toLowerCase());
         $("#log_out").show();
       }
 
@@ -113,15 +101,14 @@ var submit=true;
     <span id="error_message"></span>
     <input id="login_name" autocomplete="off" placeholder="Username">
     <input id="login_pass" placeholder="Password" type="password">
-    
+
     <button id="log_in" onclick="start(1, document.getElementById('login_name').value, document.getElementById('login_pass').value)">Log In</button>
     <button id="sign_up" onclick="start(0, document.getElementById('login_name').value, document.getElementById('login_pass').value)">Sign Up</button>
     <input type="checkbox" id="remember"><label for="remember">Remember me</label>
   </div>
 
-  <form id="log_out" onsubmit="document.cookie='username=; path=/; max-age=0';document.cookie='password=; path=/; max-age=0';">
+  <form id="log_out" onsubmit="event.preventDefault();$.post('logout.php',function(){document.cookie='username=; path=/; max-age=0';document.cookie='password=; path=/; max-age=0';location.reload();});">
     <span id="username">username</span>
-    <!-- <a href="#">Log out</a> -->
     <button>Log out</button>
   </form>
 	
@@ -143,6 +130,7 @@ function submit_options(e)
     {
       modify: true,
       method: 3,
+      remember: 0,
       option: option.value,
       action: action.value,
       category: category_mod.value,

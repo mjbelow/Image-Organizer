@@ -6,6 +6,8 @@
 <body>
 <script>
 <?php
+  session_start();
+
   // function to generate file name: [0-9A-Za-z]{$n}
   function generate($n)
   {
@@ -27,7 +29,7 @@
     return join("", $arr);
   }
 
-  $username=$_COOKIE["username"];
+  $username=$_SESSION["username"];
   $category = $_POST["category"];
   $choice = $_POST["choice"];
   $choice_count = count($choice);

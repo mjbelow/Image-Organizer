@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $host="127.0.0.1";
 $port=3306;
 $socket="";
@@ -10,6 +12,8 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
 $valid_user=false;
+$exists=false;
+$username="";
 
 // sign up
 if($_POST["method"] == 0)
@@ -27,8 +31,13 @@ if($_POST["method"] == 0)
     if($count == 0)
     {
       $con->prepare("insert into user values('".$username."','".hash("sha256", $_POST["login_pass"])."')")->execute();
-      setcookie("username", $username, time() + (86400 * 30), "/");
-      setcookie("password", hash("sha256", $_POST["login_pass"]), time() + (86400 * 30), "/");
+      $_SESSION["username"] = $username;
+      $_SESSION["password"] = hash("sha256", $_POST["login_pass"]);
+      if($_POST["remember"])
+      {
+        setcookie("username", $username, time() + (86400 * 30), "/");
+        setcookie("password", hash("sha256", $_POST["login_pass"]), time() + (86400 * 30), "/");
+      }
       $valid_user=true;
     }
   }
@@ -48,8 +57,13 @@ elseif($_POST["method"] == 1)
     $stmt->close();
     if($count == 1)
     {
-      setcookie("username", $username, time() + (86400 * 30), "/");
-      setcookie("password", hash("sha256", $_POST["login_pass"]), time() + (86400 * 30), "/");
+      $_SESSION["username"] = $username;
+      $_SESSION["password"] = hash("sha256", $_POST["login_pass"]);
+      if($_POST["remember"])
+      {
+        setcookie("username", $username, time() + (86400 * 30), "/");
+        setcookie("password", hash("sha256", $_POST["login_pass"]), time() + (86400 * 30), "/");
+      }
       $valid_user=true;
     }
   }
@@ -59,22 +73,30 @@ elseif($_POST["method"] == 1)
 // when user modifies options for their account (still have to verify or else they could just change their cookies to a different username and do whatever they want to other accounts)
 else
 {
-  if(isset($_COOKIE["username"]) && isset($_COOKIE["password"]))
+  if(isset($_SESSION["username"]) && isset($_SESSION["password"]))
   {
+    $username=$_SESSION["username"];
+    $query = "select count(0) from user where lower(name)=lower('".$username."') and pass='".$_SESSION["password"]."'";
+    $exists=true;
+  }
+  elseif(isset($_COOKIE["username"]) && isset($_COOKIE["password"]))
+  {
+    $_SESSION["username"] = $_COOKIE["username"];
+    $_SESSION["password"] = $_COOKIE["password"];
     $username=$_COOKIE["username"];
     $query = "select count(0) from user where lower(name)=lower('".$username."') and pass='".$_COOKIE["password"]."'";
+    $exists=true;
+  }
 
-
-    if ($stmt = $con->prepare($query))
+  if ($exists && ($stmt = $con->prepare($query)))
+  {
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+    if($count == 1)
     {
-      $stmt->execute();
-      $stmt->bind_result($count);
-      $stmt->fetch();
-      $stmt->close();
-      if($count == 1)
-      {
-        $valid_user=true;
-      }
+      $valid_user=true;
     }
   }
 }
@@ -88,7 +110,7 @@ $debug="";
 // if login credentials are wrong, or if the user was trying to sign up, don't build arrays for the user)
 if(!$valid_user || $_POST["method"] == 0)
 {
-  echo json_encode(array($index, $categories, $choices, $debug, $valid_user));
+  echo json_encode(array($index, $categories, $choices, $debug, $valid_user, $username));
   $con->close();
   exit();
 }
@@ -105,7 +127,7 @@ if(isset($_POST["modify"]))
       // increase category positions above where new category is inserted
       $con->prepare
       (
-        "update " . $_POST["option"] . 
+        "update " . $_POST["option"] .
         " set id=id+1" .
         " where id >= " . $_POST["position"] . " and lower(username) = lower('".$username."')" .
         " order by id desc"
@@ -121,13 +143,13 @@ if(isset($_POST["modify"]))
     else
     {
       // increase choice positions above where new choice is inserted
-        $debug = "update " . $_POST["option"] . 
+        $debug = "update " . $_POST["option"] .
         " set id=id+1" .
         " where id >= " . $_POST["position"] . " and category_id=" . $_POST["category_id"] . " and lower(username) = lower('".$username."')" .
         " order by id desc;";
       $con->prepare
       (
-        "update " . $_POST["option"] . 
+        "update " . $_POST["option"] .
         " set id=id+1" .
         " where id >= " . $_POST["position"] . " and category_id=" . $_POST["category_id"] . " and lower(username) = lower('".$username."')" .
         " order by id desc"
@@ -198,7 +220,7 @@ if(isset($_POST["modify"]))
         " set id=-1, name='" . $_POST["name"] . "'" .
         " where id=" . $_POST["choice_id"] . " and category_id=" . $_POST["category_id"] . " and lower(username) = lower('".$username."')"
       )->execute();
-      
+
       //decrease choices above position by 1
       if($_POST["position"] > $_POST["choice_id"])
       {
@@ -244,7 +266,7 @@ if(isset($_POST["modify"]))
       )->execute();
       $con->prepare
       (
-        "update " . $_POST["option"] . 
+        "update " . $_POST["option"] .
         " set id=id-1" .
         " where id >= " . $_POST["category_id"] . " and lower(username) = lower('".$username."')" .
         " order by id asc"
@@ -260,7 +282,7 @@ if(isset($_POST["modify"]))
       )->execute();
       $con->prepare
       (
-        "update " . $_POST["option"] . 
+        "update " . $_POST["option"] .
         " set id=id-1" .
         " where id >= " . $_POST["choice_id"] . " and category_id=" . $_POST["category_id"] . " and lower(username) = lower('".$username."')" .
         " order by id asc"
@@ -294,23 +316,23 @@ if ($stmt = $con->prepare($query)) {
     $stmt->execute();
     $stmt->bind_result($id, $category, $choice);
     while ($stmt->fetch()) {
-      
+
       $categories[$id]=$category;
-      
+
       if(!isset($choices[$id])) {
-        
+
         $choices[$id] = array();
-        
+
       }
 
       if($choice)
         array_push($choices[$id], $choice);
-      
+
     }
     $stmt->close();
 }
 
-echo json_encode(array($index, $categories, $choices, $debug, $valid_user));
+echo json_encode(array($index, $categories, $choices, $debug, $valid_user, $username));
 
 $con->close();
 ?>
