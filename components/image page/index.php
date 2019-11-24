@@ -37,6 +37,8 @@ body {
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  max-height: 300px;
+  overflow: auto;
 }
 
 .dropdown-content label {
@@ -230,7 +232,7 @@ for(i = 0; i < count; i++)
   for(j = 0; j < image_count; j++)
   {
     var category_index = images[group][j][1] - 1;
-    var choices_array = (images[group][j][2]).split(",");
+    var choices_array = (images[group][j][2]).split(",").sort(function(a,b){return a-b;});
 
     var img_container = document.createElement("div");
     img_container.className="img_container";
