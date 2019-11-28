@@ -159,6 +159,9 @@ hr {
   border: 1px solid rgba(0, 0, 0, 0.7);
   box-shadow: -1px -1px rgba(0, 0, 0, 0.2), 1px 1px rgba(255, 255, 255, 0.2);
   cursor: zoom-in;
+  display: inline-block;
+  text-align: center;
+  line-height: 28px;
 }
 
 header {
