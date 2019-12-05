@@ -288,12 +288,12 @@ for(i = 0; i < count; i++)
     for(var k = 0; k < choices_count; k++)
     {
       var label = document.createElement("label");
-      label.setAttribute("for", images[group][j][0] + k);
+      label.setAttribute("for", i + "_" + j + "_" + k);
       var checkBox = document.createElement("input");
       checkBox.type = "checkbox";
       checkBox.value = my_choices[category_select.selectedIndex][k];
       checkBox.name = "choice[]";
-      checkBox.id=images[group][j][0] + k;
+      checkBox.id= i + "_" + j + "_" + k;
       if((k+1) == choices_array[0])
       {
         checkBox.checked=true;
