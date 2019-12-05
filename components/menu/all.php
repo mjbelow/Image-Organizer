@@ -36,7 +36,7 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 //$index = array();
 
 // sql query to build index
-$query = "select category, choice, count from my_index";
+$query = "select category, choice, count from my_index where lower(username)='mjbelow'";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
@@ -51,7 +51,7 @@ if ($stmt = $con->prepare($query)) {
 
 
 // sql query to build menu
-$query = "select category, choice from my_options";
+$query = "select category, choice from my_options where lower(username)='mjbelow'";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
