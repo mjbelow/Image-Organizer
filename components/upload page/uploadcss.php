@@ -50,9 +50,9 @@
     $host="127.0.0.1";
     $port=3306;
     $socket="";
-    $user="c2375a05";
-    $password="!c2375aU!";
-    $dbname="c2375a05proj";
+    $user="root";
+    $password="";
+    $dbname="test";
 
     $con = new mysqli($host, $user, $password, $dbname, $port, $socket);
     
