@@ -1,6 +1,6 @@
-------------
--- TABLES --
-------------
+-- -------- --
+--  TABLES  --
+-- -------- --
 
 -- drop tables if they exist
 DROP TABLE IF EXISTS `image`;
@@ -18,7 +18,7 @@ CREATE TABLE `user` (
 
 -- insert data into user table
 LOCK TABLES `user` WRITE;
-INSERT INTO `user` VALUES ('mjbelow','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user2','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user3','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user4','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user5','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user6','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user7','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1'),('user8','11507a0e2f5e69d5dfa40a62a1bd7b6ee57e6bcd85c67c9b8431b36fff21c437');
+INSERT INTO `user` VALUES ('mjbelow','d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1');
 UNLOCK TABLES;
 
 -- create category table
@@ -70,9 +70,9 @@ INSERT INTO `image` VALUES ('3pZCz3a0Ma.jpg',1,1,'mjbelow'),('7rfsPC4FZg.jpg',1,
 UNLOCK TABLES;
 
 
--------------
+-- ------- --
 --  VIEWS  --
--------------
+-- ------- --
 
 -- drop views if they exist
 DROP VIEW IF EXISTS `my_index`;
