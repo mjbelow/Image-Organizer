@@ -6,7 +6,7 @@ Multi-user app that allows users to upload images and organize them into categor
 
 ## Technologies
 
-HTML, CSS, JavaScript, PHP, MySQL, jQuery
+HTML, CSS, JavaScript, PHP, MySQL, jQuery, Docker
 
 ## Demo
 
@@ -14,14 +14,21 @@ https://youtu.be/z_rzw-_6lPw
 
 ## Build
 
-Must be run on server that supports MySQL and PHP (recommended: [XAMPP](https://www.apachefriends.org/index.html)).
+Docker image hosted on Docker Hub
 
-Use following credentials to create your MySQL database or modify the PHP files to use your own credentials.
+https://hub.docker.com/r/mjbelow/image-organizer
 
-* **host**: 127.0.0.1
-* **port**: 3306
-* **username**: c2375a05
-* **password**: !c2375aU!
-* **schema**: c2375a05proj
+Base Docker Image
 
-Run ***create schema.sql*** to build the database.
+https://hub.docker.com/r/tomsik68/xampp/
+
+Create Docker container (use whatever ports that are available)
+
+`docker run -d -p 41061:22 -p 41062:80 mjbelow/image-organizer`
+
+## App
+
+* Initialize Database: [http://localhost:41062/www/init_db.php](http://localhost:41062/www/init_db.php)
+* Main: [http://localhost:41062/www/](http://localhost:41062/www/)
+  * Username: mjbelow
+  * Password: pass
