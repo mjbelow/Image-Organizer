@@ -1,3 +1,7 @@
 FROM tomsik68/xampp:8
 
-COPY . /www
+WORKDIR /www
+
+COPY . .
+
+RUN chmod 777 images
